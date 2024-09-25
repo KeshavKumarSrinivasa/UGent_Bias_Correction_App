@@ -2,10 +2,20 @@
   box-sizing: border-box;
 }
 
+.container-fluid {
+  padding-right:0;
+  padding-left: 0;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+
 body {
   font-family: Helvetica, sans-serif;
   background: #FF92C9;
   margin: 0;
+  width: 100%;              /* Take up the full width */
+  height: 100vh;            /* Take up the full viewport height */
 }
 
 .close_button{
