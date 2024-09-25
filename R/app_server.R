@@ -13,7 +13,7 @@ app_server <- function(input, output, session) {
   # Observe the "Get Started" button click in page0_landing.html
   observeEvent(input$get_started, {
     output$pageContent <- renderUI({
-      includeHTML(app_sys("app/www/page1.html"))  # Load page1.html when button is clicked
+      includeHTML(app_sys("app/www/page1_welcome.html"))  # Load page1.html when button is clicked
     })
   })
 

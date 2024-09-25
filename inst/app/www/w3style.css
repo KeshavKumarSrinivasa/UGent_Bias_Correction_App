@@ -22,12 +22,29 @@ body {
   left: 12px;
 }
 
+.close_button {
+  color: white;
+  background-color: #CD015B;
+  border: none;
+  font-size: 20px;
+  padding: 10px 20px;
+  font-weight: 600;
+  position: absolute;               /* Position it in the top left corner */
+  top: 0;                           /* Align with the top of the header */
+  left: 0;                          /* Align with the left side */
+  cursor: pointer;
+}
 
-.secondary{
+
+.secondary {
   font-family: Helvetica, sans-serif;
   background: #FFFFFF;
   margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100vh;  /* 100% of the viewport height */
 }
+
 
 /* Header/Blog Title */
 .header {
@@ -37,6 +54,16 @@ body {
   margin: 0;
   height: 74;
   line-height: 74px;
+}
+
+.header {
+  display: flex;                    /* Flexbox for layout */
+  justify-content: center;          /* Center the content in the middle */
+  align-items: center;              /* Center content vertically */
+  background-color: #CD015B;        /* Header background color */
+  height: 74px;                     /* Fixed height for the header */
+  position: relative;               /* Relative positioning to allow for absolute elements */
+  padding: 0 20px;                  /* Padding for internal spacing */
 }
 
 .repurpose-symbol {
@@ -170,4 +197,31 @@ body {
     float: none;
     width: 100%;
   }
+}
+
+
+
+.header {
+  display: flex;                    /* Flexbox layout */
+  justify-content: center;          /* Center the content in the middle */
+  align-items: center;              /* Center content vertically */
+  background-color: #CD015B;        /* Header background color */
+  height: 74px;                     /* Fixed height for the header */
+  position: relative;               /* Allow absolute positioning for the button */
+  padding: 0 20px;                  /* Padding for internal spacing */
+  box-sizing: border-box;           /* Ensure padding is included in the height */
+}
+
+.close_button {
+  color: white;
+  background-color: #CD015B;
+  border: none;
+  font-size: 24px;                  /* Adjust font size to fit header */
+  padding: 10px 15px;               /* Reduced padding to fit header */
+  font-weight: 600;
+  position: absolute;               /* Place button at the top-left corner */
+  top: 0;
+  left: 0;
+  height: 100%;                     /* Make the button the same height as the header */
+  cursor: pointer;
 }
