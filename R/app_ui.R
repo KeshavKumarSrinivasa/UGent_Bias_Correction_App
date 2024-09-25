@@ -35,7 +35,8 @@ golem_add_external_resources <- function() {
       path = app_sys("app/www"),
       app_title = "repurpose"
     ),
-    tags$script(src = "https://code.jquery.com/jquery-3.6.0.min.js"),  # Ensure jQuery is loaded
+    tags$script(src = "https://code.jquery.com/jquery-3.6.0.min.js"),
+    tags$script(src = "www/navigation.js"),  # Link the JavaScript file# Ensure jQuery is loaded
     tags$link(rel = "stylesheet", type = "text/css", href = "www/w3style.css")
   )
 }
