@@ -7,26 +7,94 @@
 app_server <- function(input, output, session) {
   # Load the initial page (Home Page)
   output$pageContent <- renderUI({
-    htmlTemplate(app_sys("app/www/index.html"), data_value = 42)  # Insert dynamic value
+    htmlTemplate(app_sys("app/www/page0_landing.html"))
   })
 
-  # Observe when "Go to Page 2" is clicked
-  observeEvent(input$go_to_page2, {
+  # Observe when "Go to Page 1" is clicked
+  observeEvent(input$get_started, {
     output$pageContent <- renderUI({
-      htmlTemplate(app_sys("app/www/page2.html"), data_value = 99)  # Load Page 2 with dynamic value
+      htmlTemplate(app_sys("app/www/page1_welcome.html"))  # Load Page 1
+    })
+  })
+
+  # Observe when "continue" is clicked
+  observeEvent(input$continue, {
+    output$pageContent <- renderUI({
+      htmlTemplate(app_sys("app/www/page2_upload.html"),metabolomics_data_upload="hello",
+                   participant_data_upload=10,
+                   select_one_of_rows_or_columns=69)  # Load Page 2
+    })
+  })
+
+  observeEvent(input$next3, {
+    output$pageContent <- renderUI({
+      htmlTemplate(app_sys("app/www/page3_outcomes.html"),select_primary_outcome=5,
+                   select_secondary_outcome=10)  # Load Page 3
+    })
+  })
+
+  observeEvent(input$next4, {
+    output$pageContent <- renderUI({
+      htmlTemplate(app_sys("app/www/page4_parameters.html"),select_number_of_cv_iterations=2,
+                   select_alpha_value=340)  # Load Page 4
+    })
+  })
+
+  observeEvent(input$next5, {
+    output$pageContent <- renderUI({
+      htmlTemplate(app_sys("app/www/page5_analysis.html"),display_analysis_results=231)  # Load Page 5
+    })
+  })
+
+  observeEvent(input$next6, {
+    output$pageContent <- renderUI({
+      htmlTemplate(app_sys("app/www/page6_downloads.html"))  # Load Page 6
+    })
+  })
+  observeEvent(input$back5, {
+    output$pageContent <- renderUI({
+      htmlTemplate(app_sys("app/www/page5_analysis.html"),display_analysis_results=231)  # Load Page 5
+    })
+  })
+
+  observeEvent(input$back4, {
+    output$pageContent <- renderUI({
+      htmlTemplate(app_sys("app/www/page4_parameters.html"),select_number_of_cv_iterations=2,
+                   select_alpha_value=340)  # Load Page 4
+    })
+  })
+
+  observeEvent(input$back3, {
+    output$pageContent <- renderUI({
+      htmlTemplate(app_sys("app/www/page3_outcomes.html"),select_primary_outcome=5,
+                   select_secondary_outcome=10)  # Load Page 3
+    })
+  })
+
+  observeEvent(input$back2, {
+    output$pageContent <- renderUI({
+      htmlTemplate(app_sys("app/www/page2_upload.html"),metabolomics_data_upload="hello",
+                   participant_data_upload=10,
+                   select_one_of_rows_or_columns=69)  # Load Page 2
+    })
+  })
+
+  observeEvent(input$back1, {
+    output$pageContent <- renderUI({
+      htmlTemplate(app_sys("app/www/page1_welcome.html"))  # Load Page 1
     })
   })
 
   # Observe when "Back to Home" is clicked
   observeEvent(input$back_to_home, {
     output$pageContent <- renderUI({
-      htmlTemplate(app_sys("app/www/index.html"), data_value = 48)  # Load Home Page again
+      htmlTemplate(app_sys("app/www/page0_landing.html"))  # Load Home Page again
     })
   })
 
   # Set up JavaScript to listen for link clicks and notify Shiny
   session$sendCustomMessage(type = 'init', message = NULL)
-  }
+}
 
 
 

@@ -22,29 +22,12 @@ body {
   left: 12px;
 }
 
-.close_button {
-  color: white;
-  background-color: #CD015B;
-  border: none;
-  font-size: 20px;
-  padding: 10px 20px;
-  font-weight: 600;
-  position: absolute;               /* Position it in the top left corner */
-  top: 0;                           /* Align with the top of the header */
-  left: 0;                          /* Align with the left side */
-  cursor: pointer;
-}
 
-
-.secondary {
+.secondary{
   font-family: Helvetica, sans-serif;
   background: #FFFFFF;
   margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100vh;  /* 100% of the viewport height */
 }
-
 
 /* Header/Blog Title */
 .header {
@@ -54,16 +37,6 @@ body {
   margin: 0;
   height: 74;
   line-height: 74px;
-}
-
-.header {
-  display: flex;                    /* Flexbox for layout */
-  justify-content: center;          /* Center the content in the middle */
-  align-items: center;              /* Center content vertically */
-  background-color: #CD015B;        /* Header background color */
-  height: 74px;                     /* Fixed height for the header */
-  position: relative;               /* Relative positioning to allow for absolute elements */
-  padding: 0 20px;                  /* Padding for internal spacing */
 }
 
 .repurpose-symbol {
@@ -200,7 +173,6 @@ body {
 }
 
 
-
 .header {
   display: flex;                    /* Flexbox layout */
   justify-content: center;          /* Center the content in the middle */
@@ -225,3 +197,13 @@ body {
   height: 100%;                     /* Make the button the same height as the header */
   cursor: pointer;
 }
+
+.secondary {
+  font-family: Helvetica, sans-serif;
+  background: #FFFFFF;
+  margin: 0;
+  padding: 0;
+  width: 100%;              /* Take up the full width */
+  height: 100vh;            /* Take up the full viewport height */
+}
+

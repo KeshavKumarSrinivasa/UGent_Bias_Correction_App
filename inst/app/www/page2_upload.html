@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="w3style.css">
 </head>
-<body class="secondary">
+<body>
+<div class="secondary">
 <div class="page2">
     <!-- Header -->
     <div class="header">
-      <button class="close_button" onclick="window.location.href='page0_landing.html';">&#x00D7;</button>
+      <button class="close_button" id="back_to_home">&#x00D7;</button>
       <h1><span class="repurpose-symbol" >&#x267A;</span></h1>
     </div>
-    
+
     <!-- Get Started -->
      <h1> Upload Processed Metabolomics Data</h1>
      {{metabolomics_data_upload}}
@@ -22,8 +23,9 @@
      <h1> Metabolite ID's are along</h1>
      {{select_one_of_rows_or_columns}}
      <br>
-    <button class="button" onclick="window.location.href='page1_welcome.html';">Back</button>
-    <button class="button" onclick="window.location.href='page3_outcomes.html';">Next</button>
+    <button class="button" id="back1">Back</button>
+    <button class="button" id="next3">Next</button>
+</div>
 </div>
 
 </body>
