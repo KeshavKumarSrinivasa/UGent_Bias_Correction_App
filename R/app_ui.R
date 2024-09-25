@@ -10,7 +10,7 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # Your application UI logic
     fluidPage(
-      golem::golem_welcome_page() # Remove this line to start building your UI
+      uiOutput("pageContent")  # Dynamically display HTML content here
     )
   )
 }
@@ -26,7 +26,7 @@ app_ui <- function(request) {
 golem_add_external_resources <- function() {
   add_resource_path(
     "www",
-    app_sys("app/www")
+    app_sys("app/www")  # Set the path to your 'www' directory
   )
 
   tags$head(
@@ -34,8 +34,10 @@ golem_add_external_resources <- function() {
     bundle_resources(
       path = app_sys("app/www"),
       app_title = "repurpose"
-    )
-    # Add here other external resources
-    # for example, you can add shinyalert::useShinyalert()
+    ),
+    tags$script(src = "https://code.jquery.com/jquery-3.6.0.min.js"),  # Ensure jQuery is loaded
+    tags$link(rel = "stylesheet", type = "text/css", href = "www/w3style.css")
   )
 }
+
+
