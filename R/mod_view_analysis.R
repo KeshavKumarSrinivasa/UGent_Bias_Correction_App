@@ -1,56 +1,42 @@
-#' view_analysis UI Function
-#'
-#' @description A shiny Module for viewing analysis images using slickR.
-#'
-#' @param id,input,output,session Internal parameters for {shiny}.
-#'
-#' @noRd
-#' @importFrom shiny NS tagList
-#' @importFrom slickR slickROutput
-library(svglite)
-
 mod_view_analysis_ui <- function(id) {
   ns <- NS(id)
 
-  # Make the slickR output dynamic by setting width and height as 100% or auto
-  slickROutput(ns("slickr_panel"), width =  800, height = 400)
+  # Output the slickR carousel with PNG images
+  slickROutput(ns("slickr_panel"), width = 800, height = 400)
 }
 
 
-
-#' view_analysis Server Functions
-#'
-#' @noRd
-#' @importFrom slickR slickR settings
 mod_view_analysis_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    # Use reactiveVal to cache the plots
+    # Create a temporary directory to store the PNG files
+    tmp_dir <- tempdir()
+
+    # Generate the PNG images
     cached_plots <- reactiveVal(NULL)
 
-    # Render slickR in the UI only if plots are not already cached
-    output$slickr_panel <- renderSlickR({
-      if (is.null(cached_plots())) {
-        # If not cached, generate the plots and cache them
-        plotsToSVG <- replicate(4, xmlSVG({
-          par(mar = c(4, 4, 1, 1))  # Set plot margins to avoid crowding
-          plot(rnorm(100))           # Random plot
-        }, standalone = TRUE), simplify = FALSE)
+    if (is.null(cached_plots())) {
+      # List to store file paths of the generated PNGs
+      png_files <- vector("list", length = 4)
 
-        # Cache the plots
-        cached_plots(plotsToSVG)
+      # Loop to generate 4 random PNG plots
+      for (i in 1:4) {
+        png_file <- file.path(tmp_dir, paste0("plot_", i, ".png"))
+        png(png_file)  # Create PNG file with specified dimensions
+        par(mar = c(4, 4, 1, 1))  # Set margins to avoid crowding
+        plot(rnorm(100))  # Generate random plot
+        dev.off()  # Close the PNG device to write the file
+        png_files[[i]] <- png_file  # Store the file path in the list
       }
 
-      # Use the cached plots in slickR
-      slickR(cached_plots(), width =  800, height = 400) + settings(dots = TRUE)
+      # Cache the list of file paths
+      cached_plots(png_files)
+    }
+
+    # Render slickR with the generated PNG images
+    output$slickr_panel <- renderSlickR({
+      slickR(cached_plots(), width = 800, height = 400) + settings(dots = TRUE)
     })
   })
 }
-
-
-## To be copied in the UI
-# mod_view_analysis_ui("view_analysis_1")
-
-## To be copied in the server
-# mod_view_analysis_server("view_analysis_1")
