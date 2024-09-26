@@ -214,41 +214,8 @@ body {
   padding: 0;
   width: 100vw;  /* Full viewport width */
   height: 100vh; /* Full viewport height */
-  display: flex;
-  flex-direction: column;
 }
 
-.page5 {
-  flex: 1;  /* Allow the page content to fill the available space */
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;  /* Space out the content (header, results, buttons) */
-  position: relative;
-}
-
-#analysisUI {
-  flex-grow: 1; /* Allow the analysis content to grow and take up available space */
-  margin-top: 20px;
-}
-
-.navigation-buttons {
-  display: flex;
-  padding-top: 20px; /* Add space between content and buttons */
-}
-
-/* Additional responsive rules (for smaller screens) */
-@media screen and (max-width: 800px) {
-  .navigation-buttons {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .navigation-buttons .button {
-    width: 100%; /* Ensure buttons take up full width on small screens */
-    margin-bottom: 10px;
-  }
-}
 
 
 
