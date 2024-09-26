@@ -10,7 +10,7 @@
 mod_metabolomics_upload_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    fileInput(ns("metabolomics_data"), label = "Upload Metabolomics Data")
+    fileInput(ns("metabolomics_data"), label = "")
   )
 }
 

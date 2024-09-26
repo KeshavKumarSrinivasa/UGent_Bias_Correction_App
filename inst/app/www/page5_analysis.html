@@ -3,24 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="w3style.css">
+  <link rel="stylesheet" href="w3style.css">
 </head>
 <body>
-<div class="secondary">
-<!-- Analysis page -->
-<div class="page5">
-  <!-- Header -->
-  <div class="header">
-    <button class="close_button" id="back_to_home">&#x00D7;</button>
-    <h1><span class="repurpose-symbol" >&#x267A;</span></h1>
+  <div class="secondary">
+    <!-- Analysis page -->
+    <div class="page5">
+      <!-- Header -->
+      <div class="header">
+        <button class="close_button" id="back_to_home">&#x00D7;</button>
+        <h1><span class="repurpose-symbol">&#x267A;</span></h1>
+      </div>
+
+      <!-- View Analysis Results -->
+      <h1>View Analysis Results</h1>
+
+      <div id="analysisUI">
+        {{display_analysis_results}} <!-- Placeholder for Shiny content -->
+      </div>
+
+      <!-- Navigation buttons container -->
+      <div class="navigation-buttons">
+        <button class="button" id="back4">Back</button>
+        <button class="button" id="next6">Next</button>
+      </div>
+
+    </div>
   </div>
-  <!-- Get Started -->
-   <h1> View Analysis Results</h1>
-   {{display_analysis_results}}
-   <br>
-    <button class="button" id="back4">Back</button>
-    <button class="button" id="next6">Next</button>
-</div>
-</div>
 </body>
 </html>

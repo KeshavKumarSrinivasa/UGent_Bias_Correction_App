@@ -10,7 +10,7 @@
 mod_participant_upload_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    fileInput(ns("participant_data"), label = "Upload Participant Data")
+    fileInput(ns("participant_data"), label = "")
   )
 }
 
