@@ -10,6 +10,9 @@
 }
 
 
+
+
+
 body {
   font-family: Helvetica, sans-serif;
   background: #FF92C9;
@@ -216,4 +219,10 @@ body {
   width: 100%;              /* Take up the full width */
   height: 100vh;            /* Take up the full viewport height */
 }
+
+.input[type="range"] {
+  -webkit-appearance: slider-horizontal;  /* Restore the default slider appearance */
+  appearance: slider-horizontal;          /* For cross-browser compatibility */
+}
+
 
