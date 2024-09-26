@@ -13,7 +13,7 @@ mod_view_analysis_ui <- function(id) {
   ns <- NS(id)
 
   # Make the slickR output dynamic by setting width and height as 100% or auto
-  slickROutput(ns("slickr_panel"), width = 600, height = 300)
+  slickROutput(ns("slickr_panel"), width =  700, height = 350)
 }
 
 
@@ -43,7 +43,7 @@ mod_view_analysis_server <- function(id) {
       }
 
       # Use the cached plots in slickR
-      slickR(cached_plots(), width = 600, height = 300) + settings(dots = TRUE)
+      slickR(cached_plots(), width =  700, height = 350) + settings(dots = TRUE)
     })
   })
 }
