@@ -9,9 +9,17 @@
 #' @importFrom shiny NS tagList
 mod_metabolomics_upload_ui <- function(id) {
   ns <- NS(id)
-  tagList(
-    fileInput(ns("metabolomics_data"), label = "")
-  )
+  tagList(tags$head(
+    tags$link(
+      rel = "stylesheet",
+      type = "text/css",
+      href = app_sys("app/www/w3style.css")
+    )
+  ),
+  fileInput(
+    ns("metabolomics_data"),
+    label = ""
+  ))
 }
 
 

@@ -11,7 +11,7 @@ mod_select_primary_outcome_ui <- function(id) {
   tagList(
     selectInput(
       inputId = ns("primary_outcome"),  # Namespaced ID
-      label = "Select Primary Outcome",  # Label for the dropdown
+      label = "",  # Label for the dropdown
       choices = c("Outcome 1", "Outcome 2", "Outcome 3"),  # The list of outcomes
       selected = "Outcome 1"  # Pre-select the first value
     )

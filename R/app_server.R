@@ -6,9 +6,6 @@
 #' @noRd
 app_server <- function(input, output, session) {
 
-  # Track if the analysis page has been rendered before
-  rendered_analysis <- reactiveVal(FALSE)
-
   # Cache the UI so that it can be reused when navigating back to page 5
   cached_analysis_ui <- reactiveVal(NULL)
 
@@ -30,8 +27,6 @@ app_server <- function(input, output, session) {
       # Cache the analysis UI for later use
       cached_analysis_ui(TRUE)
 
-      # Mark the analysis as rendered
-      rendered_analysis(TRUE)
     } else {
       # Reuse the cached UI and ensure the content is still displayed
       output$pageContent <- renderUI({
@@ -61,7 +56,7 @@ app_server <- function(input, output, session) {
       htmlTemplate(app_sys("app/www/page2_upload.html"),
                    metabolomics_data_upload = mod_metabolomics_upload_ui("metabolomics_upload"),
                    participant_data_upload = mod_participant_upload_ui("participant_upload"),
-                   select_one_of_rows_or_columns = 69)  # Load Page 2
+                   select_one_of_rows_or_columns = mod_metabolite_along_ui("metabolite_along_1"))  # Load Page 2
     })
   })
 
@@ -97,7 +92,13 @@ app_server <- function(input, output, session) {
   # Handle navigation to Page 6 (downloads)
   observeEvent(input$next6, {
     output$pageContent <- renderUI({
-      htmlTemplate(app_sys("app/www/page6_downloads.html"))  # Load Page 6
+      htmlTemplate(
+        app_sys("app/www/page6_downloads.html"),
+        download_ipw_button = mod_download_ipw_ui("download_ipw_1"), # Add the IPW download button here
+        download_model_coefficients = mod_download_model_coefficients_ui("download_model_coefficients_1"),
+        download_univariate_analysis=mod_download_univariate_analysis_ui("download_univariate_analysis_1"),
+        download_smd_analysis=mod_download_smd_analysis_ui("download_smd_analysis_1")
+      )
     })
   })
 
@@ -136,7 +137,7 @@ app_server <- function(input, output, session) {
       htmlTemplate(app_sys("app/www/page2_upload.html"),
                    metabolomics_data_upload = mod_metabolomics_upload_ui("metabolomics_upload"),
                    participant_data_upload = mod_participant_upload_ui("participant_upload"),
-                   select_one_of_rows_or_columns = 69)  # Load Page 2
+                   select_one_of_rows_or_columns = mod_metabolite_along_ui("metabolite_along_1"))  # Load Page 2
     })
   })
 
@@ -168,5 +169,20 @@ app_server <- function(input, output, session) {
   # Call primary and secondary outcome server modules with the necessary dependencies
   selected_primary_outcome <- mod_select_primary_outcome_server("select_primary_outcome_1")
   mod_select_secondary_outcome_server("select_secondary_outcome_1", selected_primary_outcome)
+
+  # IPW download functionality
+  mod_download_ipw_server("download_ipw_1")
+
+  # Model Coefficients functionality
+  mod_download_model_coefficients_server("download_model_coefficients_1")
+
+  # Univariate Analysis functionality
+  mod_download_univariate_analysis_server("download_univariate_analysis_1")
+
+  #SMD Analysis
+  mod_download_smd_analysis_server("download_smd_analysis_1")
+
+  #Metabolite ID's along
+  mod_metabolite_along_server("metabolite_along_1")
 
 }

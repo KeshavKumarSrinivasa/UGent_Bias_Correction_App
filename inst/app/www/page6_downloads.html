@@ -3,36 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="w3style.css">
+  <link rel="stylesheet" href="w3style.css">
 </head>
 <body>
 <div class="secondary">
-<!-- Downloads page -->
-<div class="page6">
-  <!-- Header -->
-  <div class="header">
-    <button class="close_button" id="back_to_home">&#x00D7;</button>
-    <h1><span class="repurpose-symbol" >&#x267A;</span></h1>
-  </div>
-  <!-- Get Started -->
-   <button class="button">
-    Download IPW Weights
-   </button>
-   <br>
-   <button class="button">
-    Download Model Coefficients
-   </button>
-   <br>
-   <button class="button">
-    Download Univariate Analysis
-   </button>
-   <br>
-   <button class="button">
-    Download SMD Analysis
-   </button>
-   <br>
+  <!-- Downloads page -->
+  <div class="page6">
+    <!-- Header -->
+    <div class="header">
+      <button class="close_button" id="back_to_home">&#x00D7;</button>
+      <h1><span class="repurpose-symbol" >&#x267A;</span></h1>
+    </div>
+    <!-- Get Started -->
+      {{download_ipw_button}}
+    <br>
+      {{download_model_coefficients}}
+    <br>
+      {{download_univariate_analysis}}
+    <br>
+      {{download_smd_analysis}}
+    <br>
     <button class="button" id="back5">Back</button>
-</div>
+  </div>
 </div>
 </body>
 </html>
+

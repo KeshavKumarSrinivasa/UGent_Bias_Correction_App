@@ -11,7 +11,7 @@ mod_select_secondary_outcome_ui <- function(id) {
   tagList(
     selectInput(
       inputId = ns("secondary_outcome"),  # Namespaced ID
-      label = "Select Secondary Outcome",  # Label for the dropdown
+      label = "",  # Label for the dropdown
       choices = NULL  # Choices will be updated dynamically
     )
   )
