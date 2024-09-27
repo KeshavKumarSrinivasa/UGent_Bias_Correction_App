@@ -28,11 +28,25 @@ mod_metabolomics_upload_ui <- function(id) {
 #' @noRd
 mod_metabolomics_upload_server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    reactive({
-      input$metabolomics_data
+
+    # Step 1: Get the file extension using fct_get_file_extension
+    file_ext <- reactive({
+      req(input$metabolomics_data)  # Ensure the file input exists
+      get_file_extension(input$metabolomics_data$datapath)
     })
+
+    # Step 2: Read the file using the read_file function
+    dataset <- reactive({
+      req(input$metabolomics_data)  # Ensure the file input exists
+      file_path <- input$metabolomics_data$datapath
+      file_extension <- file_ext()  # Get the file extension
+      read_file(file_path, file_extension)  # Read the file
+    })
+
+
   })
 }
+
 
 ## To be copied in the UI
 # mod_metabolomics_upload_ui("metabolomics_upload_1")

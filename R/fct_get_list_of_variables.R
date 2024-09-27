@@ -1,10 +1,15 @@
-#' get_list_of_variables
+#' Get List of Variables (Column Names) from Uploaded Data
 #'
-#' @description A fct function
+#' @description A function to extract the column names from a data frame.
 #'
-#' @return The return value, if any, from executing the function.
+#' @param data A data frame from which to extract column names.
 #'
-#' @noRd
-get_list_of_variables <- function(participant_data) {
+#' @return A vector containing the column names.
+#' @export
+get_list_of_variables <- function(data) {
+  if (is.null(data)) {
+    stop("No data provided.")
+  }
 
+  return(colnames(data))
 }

@@ -11,9 +11,9 @@ mod_select_primary_outcome_ui <- function(id) {
   tagList(
     selectInput(
       inputId = ns("primary_outcome"),  # Namespaced ID
-      label = "",  # Label for the dropdown
-      choices = c("Outcome 1", "Outcome 2", "Outcome 3"),  # The list of outcomes
-      selected = "Outcome 1"  # Pre-select the first value
+      label = "Select Primary Outcome",  # Label for the dropdown
+      choices = NULL,  # Choices will be dynamically populated from the server
+      selected = NULL  # No default selection initially
     )
   )
 }
@@ -21,21 +21,26 @@ mod_select_primary_outcome_ui <- function(id) {
 #' select_primary_outcome Server Function
 #'
 #' @noRd
-mod_select_primary_outcome_server <- function(id) {
+mod_select_primary_outcome_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
-    # Reactive to return the selected outcome
-    selected_outcome <- reactive({
-      input$primary_outcome
+
+    # Observe the reactive dataset columns and update the dropdown choices
+    observe({
+      req(r$data_cols())  # Wait until r$data_cols is populated
+
+      columns <- r$data_cols()  # Get the list of columns
+
+      # Ensure columns are valid and update the selectInput
+      if (!is.null(columns) && length(columns) > 0) {
+        updateSelectInput(session, "primary_outcome",
+                          choices = columns,  # Populate the choices with column names
+                          selected = columns[1])  # Pre-select the first column
+      }
     })
 
-    # You can return or use `selected_outcome()` to capture the user's selection
-    return(selected_outcome)
+    # Return the selected primary outcome
+    reactive({
+      input$primary_outcome  # Return the selected outcome
+    })
   })
 }
-
-
-## To be copied in the UI
-# mod_select_primary_outcome_ui("select_primary_outcome_1")
-
-## To be copied in the server
-# mod_select_primary_outcome_server("select_primary_outcome_1")

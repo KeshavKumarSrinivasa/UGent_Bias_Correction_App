@@ -11,27 +11,28 @@ mod_select_secondary_outcome_ui <- function(id) {
   tagList(
     selectInput(
       inputId = ns("secondary_outcome"),  # Namespaced ID
-      label = "",  # Label for the dropdown
+      label = "Select Secondary Outcome",  # Label for the dropdown
       choices = NULL  # Choices will be updated dynamically
     )
   )
 }
 
-
 #' select_secondary_outcome Server Function
 #'
 #' @noRd
-mod_select_secondary_outcome_server <- function(id, primary_outcome) {
+mod_select_secondary_outcome_server <- function(id, primary_outcome, r) {
   moduleServer(id, function(input, output, session) {
-    # Define the list of all possible outcomes
-    all_outcomes <- c("Outcome 1", "Outcome 2", "Outcome 3")
 
-    # Update the secondary outcome choices based on primary outcome selection
+    # Observe the primary outcome and update the secondary outcome choices
     observe({
-      selected_primary <- primary_outcome()
+      req(primary_outcome())  # Ensure primary outcome is selected
+      req(r$data_cols())  # Ensure dataset columns are available
+
+      # Get the list of all outcomes (columns from the dataset)
+      all_outcomes <- r$data_cols()
 
       # Exclude the selected primary outcome from the secondary choices
-      secondary_choices <- setdiff(all_outcomes, selected_primary)
+      secondary_choices <- setdiff(all_outcomes, primary_outcome())
 
       # Update the choices for the secondary outcome dropdown
       updateSelectInput(session, "secondary_outcome",
@@ -47,10 +48,3 @@ mod_select_secondary_outcome_server <- function(id, primary_outcome) {
     return(selected_secondary)
   })
 }
-
-
-## To be copied in the UI
-# mod_select_secondary_outcome_ui("select_secondary_outcome_1")
-
-## To be copied in the server
-# mod_select_secondary_outcome_server("select_secondary_outcome_1")
