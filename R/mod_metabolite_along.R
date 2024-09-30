@@ -11,9 +11,9 @@ mod_metabolite_along_ui <- function(id) {
   ns <- NS(id)
   tagList(
     # Radio button for selecting between "Rows" and "Columns"
-    radioButtons(ns("row_or_column"), "",
-                 choices = list("Rows" = "rows", "Columns" = "columns"),
-                 selected = "rows")  # Default selection: "Rows"
+    radioButtons(ns("is_transpose_needed"), "",
+                 choices = list("Rows" = TRUE, "Columns" = FALSE),
+                 selected = TRUE)  # Default selection: "Rows"
   )
 }
 
@@ -30,8 +30,10 @@ mod_metabolite_along_server <- function(id){
 
     # Reactive expression to track user selection between "Rows" and "Columns"
     selected_option <- reactive({
-      input$row_or_column
+      input$is_transpose_needed
     })
+
+    return(selected_option)
   })
 }
 

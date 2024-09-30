@@ -1,0 +1,96 @@
+#' calculate_smd
+#'
+#' @description Calculates Standardized Mean Differences (SMD) for all covariates (both continuous and categorical),
+#'              comparing cases and controls before and after applying weights.
+#'
+#' @param train_data_with_weights A data frame that includes the training data and the weights column.
+#' @param primary_outcome The column name of the primary outcome (typically "case" or "control").
+#' @param secondary_outcome The secondary outcome of interest (used in SMD calculations).
+#' @param covariates A vector of covariate names for which the SMD is calculated.
+#'
+#' @return A list with two data frames: 'smd_before' (SMD before applying weights) and 'smd_after' (SMD after applying weights).
+#'
+#' @noRd
+
+# Load necessary libraries
+library(dplyr)
+
+# Function to calculate SMD with respect to secondary outcome for all covariates
+calculate_smd_all_covariates <- function(train_data_with_weights, primary_outcome, secondary_outcome, covariates) {
+
+  # Helper function to calculate SMD for continuous variables
+  # SMD = |mean_case - mean_control| / sqrt((var_case + var_control) / 2)
+  smd_continuous <- function(mean_case, mean_control, var_case, var_control) {
+    abs(mean_case - mean_control) / sqrt((var_case + var_control) / 2)
+  }
+
+  # Helper function to calculate SMD for categorical variables using proportions
+  # SMD = |p_case - p_control| / sqrt((p_case * (1 - p_case) + p_control * (1 - p_control)) / 2)
+  smd_proportions <- function(p_case, p_control) {
+    abs(p_case - p_control) / sqrt(((p_case * (1 - p_case)) + (p_control * (1 - p_control))) / 2)
+  }
+
+  # Initialize data frames to store SMD results before and after weighting
+  smd_before <- data.frame(covariate = character(), smd_value = numeric(), stringsAsFactors = FALSE)
+  smd_after <- data.frame(covariate = character(), smd_value = numeric(), stringsAsFactors = FALSE)
+
+  # Loop through each covariate to calculate SMD before and after weighting
+  for (covariate in covariates) {
+
+    # Check if the covariate is continuous (numeric) or categorical
+    if (is.numeric(train_data_with_weights[[covariate]])) {
+      # Continuous covariate: Calculate SMD using means and variances
+
+      # Filter case and control groups
+      case_data <- train_data_with_weights %>% filter(.data[[primary_outcome]] == "case")
+      control_data <- train_data_with_weights %>% filter(.data[[primary_outcome]] == "control")
+
+      # SMD before weighting: Calculate mean and variance for cases and controls
+      mean_case <- mean(case_data[[covariate]], na.rm = TRUE)
+      mean_control <- mean(control_data[[covariate]], na.rm = TRUE)
+      var_case <- var(case_data[[covariate]], na.rm = TRUE)
+      var_control <- var(control_data[[covariate]], na.rm = TRUE)
+      smd_value_before <- smd_continuous(mean_case, mean_control, var_case, var_control)
+
+      # SMD after weighting: Calculate weighted mean and variance for cases and controls
+      weighted_mean_case <- weighted.mean(case_data[[covariate]], case_data$weights, na.rm = TRUE)
+      weighted_mean_control <- weighted.mean(control_data[[covariate]], control_data$weights, na.rm = TRUE)
+      weighted_var_case <- sum(case_data$weights * (case_data[[covariate]] - weighted_mean_case)^2) / sum(case_data$weights)
+      weighted_var_control <- sum(control_data$weights * (control_data[[covariate]] - weighted_mean_control)^2) / sum(control_data$weights)
+      smd_value_after <- smd_continuous(weighted_mean_case, weighted_mean_control, weighted_var_case, weighted_var_control)
+
+      # Store results in data frames
+      smd_before <- rbind(smd_before, data.frame(covariate = covariate, smd_value = smd_value_before))
+      smd_after <- rbind(smd_after, data.frame(covariate = covariate, smd_value = smd_value_after))
+
+    } else {
+      # Categorical covariate: Calculate SMD using proportions for each level
+
+      # Get the levels of the categorical covariate
+      levels_covariate <- levels(train_data_with_weights[[covariate]])
+
+      # Loop through each level of the categorical covariate
+      for (level in levels_covariate) {
+        case_data <- train_data_with_weights %>% filter(.data[[primary_outcome]] == "case")
+        control_data <- train_data_with_weights %>% filter(.data[[primary_outcome]] == "control")
+
+        # SMD before weighting: Calculate the proportion of each level in cases and controls
+        p_case <- mean(case_data[[covariate]] == level, na.rm = TRUE)
+        p_control <- mean(control_data[[covariate]] == level, na.rm = TRUE)
+        smd_value_before <- smd_proportions(p_case, p_control)
+
+        # SMD after weighting: Calculate weighted proportions for cases and controls
+        weighted_p_case <- sum(case_data$weights * (case_data[[covariate]] == level), na.rm = TRUE) / sum(case_data$weights)
+        weighted_p_control <- sum(control_data$weights * (control_data[[covariate]] == level), na.rm = TRUE) / sum(control_data$weights)
+        smd_value_after <- smd_proportions(weighted_p_case, weighted_p_control)
+
+        # Store results for each level of the categorical variable
+        smd_before <- rbind(smd_before, data.frame(covariate = paste0(covariate, "_", level), smd_value = smd_value_before))
+        smd_after <- rbind(smd_after, data.frame(covariate = paste0(covariate, "_", level), smd_value = smd_value_after))
+      }
+    }
+  }
+
+  # Return the SMD values before and after applying weights
+  return(list(smd_before = smd_before, smd_after = smd_after))
+}
