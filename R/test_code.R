@@ -20,11 +20,23 @@ metabolite_data_out <- processed_data$metabolite_data
 combined_data <- processed_data$combined_data
 train_data <- processed_data$train
 test_data <- processed_data$test
-#
-# primary_outcome <- "nafld"
-# alpha <- 0.5
-# cv_iter <- 5
-# secondary_outcome <- "obese"
+
+primary_outcome <- "nafld"
+alpha <- 0.5
+cv_iter <- 5
+secondary_outcome <- "obese"
+
+analysis <- run_pipeline(
+  participant_data = participant_data,
+  metabolite_data = metabolite_data,
+  primary_outcome = "nafld",
+  secondary_outcome = "obese",
+  alpha = 0.5,
+  cv_iter = 3,
+  metabolite_ids_are_rows = FALSE,
+  split_ratio = 0.8
+)
+
 #
 #
 # ip_weights <- get_weights(train_data, primary_outcome)
@@ -53,8 +65,7 @@ test_data <- processed_data$test
 # #   head(10)
 # #
 # #
-# # rownames(test_data) <- test_data[["subjid"]]
-# # test_data <- test_data[,-c(which(colnames(test_data)=="subjid"))]
+
 # #
 # #
 # # # Step 3: Calculate AUC-ROC on the test data

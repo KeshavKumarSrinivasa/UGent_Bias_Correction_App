@@ -49,7 +49,7 @@ run_pipeline <- function(participant_data,
 
   # Step 2: Get Weights
   message("Step 2: Getting weights")
-  ip_weights <- get_weights(train_data, primary_outcome)
+  ip_weights <- get_weights(combined_data, train_data, primary_outcome)
 
   # Step 3: Multivariate analysis
   message("Step 3: Performing multivariate analysis")
@@ -59,7 +59,7 @@ run_pipeline <- function(participant_data,
     secondary_outcome = secondary_outcome,
     alpha = alpha,
     cv_iter = cv_iter,
-    weights = ip_weights$weight_values
+    weights = ip_weights$train_weight_values
   )
 
   # Step 4: Univariate analysis
@@ -68,13 +68,16 @@ run_pipeline <- function(participant_data,
 
   # Step 5: Standardized mean difference analysis
   message("Step 5: Calculating standardized mean difference")
-  smd_results <- calculate_smd_all_covariates(participant_data = participant_data,
-                                              train_data_with_weights = ip_weights$train_data_with_weights,
-                                              secondary_outcome)
+  smd_results <- calculate_smd_all_covariates(
+    participant_data = participant_data,
+    train_data_with_weights = ip_weights$train_data_with_weights,
+    secondary_outcome
+  )
 
   # Return processed data
   return(
     list(
+      ip_weights = ip_weights,
       multivariate_results = multivariate_results,
       univariate_results = univariate_results,
       smd_results = smd_results

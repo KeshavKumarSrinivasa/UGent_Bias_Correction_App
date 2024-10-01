@@ -21,8 +21,8 @@ perform_multivariate_analysis <- function(train_data,
                                           weights = NULL) {
 
   #Making subject id as rownames
-  rownames(train_data) <- train_data[["subjid"]]
-  train_data <- train_data[,-c(which(colnames(train_data)=="subjid"))]
+  # rownames(train_data) <- train_data[["subjid"]]
+  # train_data <- train_data[,-c(which(colnames(train_data)=="subjid"))]
 
   # Create model matrix
   x <- model.matrix(as.formula(paste(secondary_outcome, "~ . - 1")), data = train_data)  # Create model matrix (no intercept)
@@ -52,8 +52,6 @@ perform_multivariate_analysis <- function(train_data,
     head(10)
 
   # Step 3: Calculate AUC-ROC on the test data
-  rownames(test_data) <- test_data[["subjid"]]
-  test_data <- test_data[,-c(which(colnames(test_data)=="subjid"))]
   test_x <- model.matrix(as.formula(paste(secondary_outcome, "~ . - 1")), data = test_data)  # Create model matrix (no intercept)
   test_y <- as.factor(test_data[[secondary_outcome]])  # Outcome variable (factor)
   y_pred <- predict(cv_fit,

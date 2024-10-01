@@ -27,6 +27,10 @@ pre_process <- function(participant_data, metabolite_data, metabolite_ids_are_ro
   # Merge the two data frames based on 'participant_id'
   combined_data <- merge(participant_data, processed_metabolite_data, by = "subjid")
 
+  # Make subjid as rownames
+  rownames(combined_data) <- combined_data[["subjid"]]
+  combined_data <- combined_data[,-c(which(colnames(combined_data)=="subjid"))]
+
   # Stratified split on case/control status
   set.seed(123)  # For reproducibility
   train_index <- createDataPartition(combined_data[[case_control_col]], p = split_ratio, list = FALSE)
