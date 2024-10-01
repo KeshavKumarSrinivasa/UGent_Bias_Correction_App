@@ -17,7 +17,9 @@
 library(dplyr)
 
 # Function to calculate SMD with respect to secondary outcome for all covariates
-calculate_smd_all_covariates <- function(participant_data, train_data_with_weights, primary_outcome, secondary_outcome, weights_values,covariates) {
+calculate_smd_all_covariates <- function(participant_data, train_data_with_weights, secondary_outcome) {
+
+  covariates <- participant_data %>% select(-subjid) %>% colnames()
 
   participant_columns <- colnames(participant_data)
   participant_train_data <- train_data_with_weights %>% select(c(one_of(participant_columns),weights))
@@ -75,8 +77,8 @@ calculate_smd_all_covariates <- function(participant_data, train_data_with_weigh
 
       # Loop through each level of the categorical covariate
       for (level in levels_covariate) {
-        case_data <- participant_train_data %>% filter(.data[[primary_outcome]] == "Case")
-        control_data <- participant_train_data %>% filter(.data[[primary_outcome]] == "Control")
+        case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Obese")
+        control_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Lean")
 
         # SMD before weighting: Calculate the proportion of each level in cases and controls
         p_case <- mean(case_data[[covariate]] == level, na.rm = TRUE)

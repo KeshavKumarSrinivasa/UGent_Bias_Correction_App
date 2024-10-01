@@ -99,6 +99,7 @@ perform_multivariate_analysis <- function(train_data,
   return(
     list(
       top_ten_coefficients = top_ten_coef,
+      all_coefficients = coef_df,
       auc_value = auc_value,
       auc_ci = auc_ci,
       roc_plot = roc_plot
