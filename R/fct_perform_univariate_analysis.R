@@ -10,12 +10,26 @@ library(ggplot2)
 library(dplyr)
 
 # Univariate analysis function that returns results and volcano plot
-perform_univariate_analysis <- function(input_data, secondary_outcome) {
+perform_univariate_analysis <- function(train_data,
+                                        metabolite_data,
+                                        secondary_outcome) {
+  # Get vector of metabolites
+  metabolites <- metabolite_data_out %>% select(-c("subjid")) %>% colnames()
 
-  df <- input_data$merged_data
+  # Replacing " ", "+" with "_"
+  renamed_metabolites <- gsub(" ","_",metabolites)
+  renamed_metabolites <- gsub("\\+","_",renamed_metabolites)
+  renamed_metabolites <- gsub("\\-","_",renamed_metabolites)
+  renamed_metabolites <- gsub("\\(","_",renamed_metabolites)
+  renamed_metabolites <- gsub("\\)","_",renamed_metabolites)
+  renamed_metabolites <- gsub("\\:","_",renamed_metabolites)
 
-  # Remove 'subjid' column (subject IDs), and any non-numeric columns if needed
-  df <- df %>% select(-subjid)
+
+  # Take only columns of interest. That is, secondary outcome and metabolites
+  data_for_univariate_analysis <- train_data %>% select(one_of(c(secondary_outcome, metabolites))) %>%   mutate(across(one_of(secondary_outcome), as.factor))
+
+  #Renaming the column names
+  colnames(data_for_univariate_analysis) <- c(secondary_outcome,renamed_metabolites)
 
   # Response variable
   response_var <- secondary_outcome
@@ -27,11 +41,11 @@ perform_univariate_analysis <- function(input_data, secondary_outcome) {
   p_values <- numeric()
 
   # Loop through each predictor variable
-  for (col in colnames(df)) {
+  for (col in colnames(data_for_univariate_analysis)) {
     if (col != response_var) {
       # Fit univariate logistic regression model
       formula <- as.formula(paste(response_var, "~", col))
-      model <- glm(formula, data = df, family = binomial)
+      model <- glm(formula, data = data_for_univariate_analysis, family = binomial)
       summary_model <- summary(model)
 
       # Extract estimate, standard error, and p-value for the predictor
@@ -45,7 +59,8 @@ perform_univariate_analysis <- function(input_data, secondary_outcome) {
         Estimate = estimate,
         StdError = std_error,
         PValue = p_value,
-        FDR = NA,  # Placeholder for FDR values
+        FDR = NA,
+        # Placeholder for FDR values
         stringsAsFactors = FALSE
       )
 
@@ -67,14 +82,11 @@ perform_univariate_analysis <- function(input_data, secondary_outcome) {
   # Step 1: Create Volcano Plot
   volcano_plot <- ggplot(results, aes(x = Estimate, y = logFDR)) +
     geom_point(aes(color = FDR < 0.05)) +  # Color points based on significance
-    scale_color_manual(values = c("grey", "red")) +  # Red for significant, black for non-significant
+    scale_color_manual(values = c("grey", "red")) +  # Red for significant, grey for non-significant
     labs(title = "Volcano Plot", x = "Effect Size (Estimate)", y = "-log10(FDR)") +
     theme_minimal() +
     theme(legend.position = "none")
 
   # Step 2: Return results and volcano plot
-  return(list(
-    results = results,
-    volcano_plot = volcano_plot
-  ))
+  return(list(results = results, volcano_plot = volcano_plot))
 }

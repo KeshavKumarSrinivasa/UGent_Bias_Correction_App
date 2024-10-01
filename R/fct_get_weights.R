@@ -57,5 +57,5 @@ get_weights <- function(train_data, primary_outcome) {
     mutate(weights = 1/combined_probs)
 
   # Return the modified train_data dataframe with weights added
-  return(list(values=weights,train_data_with_weights=train_data_with_weights))
+  return(list(weight_values=train_data_with_weights[["weights"]],train_data_with_weights=train_data_with_weights))
 }

@@ -19,13 +19,13 @@ pre_process <- function(participant_data, metabolite_data, metabolite_ids_are_ro
     metabolite_data <- take_transpose(metabolite_data)
   }
 
-  # Merge the two data frames based on 'participant_id'
-  combined_data <- merge(participant_data, metabolite_data, by = "subjid")
+
 
   # More concise and specific to metabolite data
   processed_metabolite_data <- preprocess_metabolites_data(metabolite_data)
 
-
+  # Merge the two data frames based on 'participant_id'
+  combined_data <- merge(participant_data, processed_metabolite_data, by = "subjid")
 
   # Stratified split on case/control status
   set.seed(123)  # For reproducibility
@@ -40,5 +40,5 @@ pre_process <- function(participant_data, metabolite_data, metabolite_ids_are_ro
               test = test_data,
               combined_data = combined_data,
               participant_data = participant_data,
-              metabolite_data = metabolite_data))
+              metabolite_data = processed_metabolite_data))
 }

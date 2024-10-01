@@ -26,41 +26,31 @@
 run_pipeline <- function(participant_data, metabolite_data, primary_outcome, secondary_outcome, alpha, cv_iter, metabolite_ids_are_rows, split_ratio = 0.8) {
 
   # Step 1: Pre-process the data
-  processed_data <- pre_process(participant_data, metabolite_data, metabolite_ids_are_rows, split_ratio)
+  message("Step 1: Pre-processing the data")
+  processed_data <- pre_process(participant_data, metabolite_data, metabolite_ids_are_rows=FALSE, case_control_col="nafld",split_ratio=0.8)
 
-  # Access individual data frames from the pre-processed output
-  # 'participant_data_out' and 'metabolite_data_out' are the original datasets after processing,
-  # 'combined_data' is the merged dataset, and 'train_data'/'test_data' are the split datasets.
   participant_data_out <- processed_data$participant_data
   metabolite_data_out <- processed_data$metabolite_data
   combined_data <- processed_data$combined_data
   train_data <- processed_data$train
   test_data <- processed_data$test
 
-
-  # Step 2: Get Weights (if applicable, based on outcomes)
+  # Step 2: Get Weights
+  message("Step 2: Getting weights")
   ip_weights <- get_weights(train_data, primary_outcome)
 
-  # # Add weights to the train_data
-  # train_data_with_weights <- train_data %>%
-  #   mutate(weights = weights)
-  #
-  # Step 3: Multivariate analysis (using glmnet with cross-validation)
-  multivariate_results <- perform_multivariate_analysis(train_data, alpha, cv_iter, weights = ip_weights$weights)
+  # Step 3: Multivariate analysis
+  message("Step 3: Performing multivariate analysis")
+  multivariate_results <- perform_multivariate_analysis(train_data = train_data, test_data = test_data, secondary_outcome = secondary_outcome,alpha=alpha, cv_iter=cv_iter, weights = ip_weights$weight_values)
 
-  # Step 4: Univariate analysis (logistic regression for each predictor)
-  univariate_results <- perform_univariate_analysis(train_data_with_weights, secondary_outcome)
+  # Step 4: Univariate analysis
+  message("Step 4: Performing univariate analysis")
+  univariate_results <- perform_univariate_analysis(train_data, metabolite_data_out, secondary_outcome)
 
   # Step 5: Standardized mean difference analysis
-  smd_results <- calculate_smd_secondary_outcome(train_data_with_weights, primary_outcome, secondary_outcome)
+  message("Step 5: Calculating standardized mean difference")
+  smd_results <- calculate_smd_all_covariates(train_data_with_weights, primary_outcome, secondary_outcome)
 
-  #Return all results
-  return(list(
-    processed_data = processed_data,
-    multivariate_results = multivariate_results,
-    univariate_results = univariate_results,
-    smd_results = smd_results
-  ))
-
+  # Return processed data
   return(processed_data)
 }
