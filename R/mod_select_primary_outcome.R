@@ -26,9 +26,9 @@ mod_select_primary_outcome_server <- function(id, r) {
 
     # Observe the reactive dataset columns and update the dropdown choices
     observe({
-      req(r$data_cols())  # Wait until r$data_cols is populated
+      req(r$participant_data$participant_dataset_columns())  # Wait until participant_dataset_columns is populated
 
-      columns <- r$data_cols()  # Get the list of columns
+      columns <- r$participant_data$participant_dataset_columns()  # Get the list of columns
 
       # Ensure columns are valid and update the selectInput
       if (!is.null(columns) && length(columns) > 0) {

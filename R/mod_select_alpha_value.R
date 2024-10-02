@@ -22,9 +22,9 @@ mod_select_alpha_value_ui <- function(id) {
 #' @noRd
 mod_select_alpha_value_server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    reactive({
+    return(reactive({
       input$alpha_value
-    })
+    }))
   })
 }
 

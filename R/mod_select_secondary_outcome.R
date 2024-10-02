@@ -20,16 +20,16 @@ mod_select_secondary_outcome_ui <- function(id) {
 #' select_secondary_outcome Server Function
 #'
 #' @noRd
-mod_select_secondary_outcome_server <- function(id, primary_outcome, r) {
+mod_select_secondary_outcome_server <- function(id,primary_outcome, r) {
   moduleServer(id, function(input, output, session) {
 
     # Observe the primary outcome and update the secondary outcome choices
     observe({
-      req(primary_outcome())  # Ensure primary outcome is selected
-      req(r$data_cols())  # Ensure dataset columns are available
+      req(primary_outcome)  # Ensure primary outcome is selected
+      req(r$participant_data$participant_dataset_columns())  # Ensure dataset columns are available
 
       # Get the list of all outcomes (columns from the dataset)
-      all_outcomes <- r$data_cols()
+      all_outcomes <- r$participant_data$participant_dataset_columns()
 
       # Exclude the selected primary outcome from the secondary choices
       secondary_choices <- setdiff(all_outcomes, primary_outcome())

@@ -40,8 +40,11 @@ mod_participant_upload_server <- function(id) {
       get_list_of_variables(dataset())
     })
 
-    # observe({print(dataset_columns())})
-    return(dataset_columns)  # Return the list of columns
+    # Return reactive expressions (not invoked immediately)
+    return(list(
+      participant_dataset_columns = dataset_columns,
+      participant_dataset = dataset
+    ))
   })
 }
 

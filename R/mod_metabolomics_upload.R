@@ -43,9 +43,20 @@ mod_metabolomics_upload_server <- function(id) {
       read_file(file_path, file_extension)  # Read the file
     })
 
+    # Step 3: Get the list of variables/columns using fct_get_list_of_variables
+    dataset_columns <- reactive({
+      req(dataset())  # Ensure dataset is available
+      get_list_of_variables(dataset())
+    })
 
+    # Return reactive expressions (not invoked immediately)
+    return(list(
+      metabolomics_dataset_columns = dataset_columns,
+      metabolomics_dataset = dataset
+    ))
   })
 }
+
 
 
 ## To be copied in the UI
