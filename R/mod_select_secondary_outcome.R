@@ -25,7 +25,7 @@ mod_select_secondary_outcome_server <- function(id,primary_outcome, r) {
 
     # Observe the primary outcome and update the secondary outcome choices
     observe({
-      req(primary_outcome)  # Ensure primary outcome is selected
+      req(primary_outcome())  # Ensure primary outcome is selected
       req(r$participant_data$participant_dataset_columns())  # Ensure dataset columns are available
 
       # Get the list of all outcomes (columns from the dataset)

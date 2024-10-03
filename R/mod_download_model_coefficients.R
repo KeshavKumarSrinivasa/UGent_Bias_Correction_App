@@ -20,7 +20,7 @@ mod_download_model_coefficients_ui <- function(id) {
 #' download_model_coefficients Server Functions
 #'
 #' @noRd
-mod_download_model_coefficients_server <- function(id){
+mod_download_model_coefficients_server <- function(id,data_model_coefficients){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
@@ -31,7 +31,8 @@ mod_download_model_coefficients_server <- function(id){
       },
       content = function(file) {
         # Generate random data (rnorm) for the CSV
-        data <- matrix(rnorm(100), ncol = 10)
+        # data <- matrix(rnorm(100), ncol = 10)
+        data <- data_model_coefficients
         write.csv(data, file, row.names = FALSE)
       }
     )

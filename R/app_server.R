@@ -7,6 +7,8 @@
 app_server <- function(input, output, session) {
   r <- reactiveValues()
 
+  analysis_results <- NULL
+
   # Cache the UI so that it can be reused when navigating back to page 5
   cached_analysis_ui <- reactiveVal(NULL)
 
@@ -21,7 +23,7 @@ app_server <- function(input, output, session) {
         )
       })
 
-      analysis_results <- mod_view_analysis_server("view_analysis_1",r=r)
+      r$analysis_results <- mod_view_analysis_server("view_analysis_1",r=r)
       cached_analysis_ui(TRUE)
     } else {
       output$pageContent <- renderUI({
@@ -120,7 +122,7 @@ app_server <- function(input, output, session) {
   observeEvent(input$next5, {
     req(
       r$participant_data$participant_dataset_columns(),
-      r$metabolomics_data$metabolomics_dataset_columns,
+      r$metabolomics_data$metabolomics_dataset_columns(),
       r$metabolites_are_rows(),
       r$primary_outcome(),
       r$secondary_outcome(),
@@ -230,19 +232,26 @@ app_server <- function(input, output, session) {
   # Call primary and secondary outcome server modules
   # selected_primary_outcome <- mod_select_primary_outcome_server("select_primary_outcome_1", r = r)
   # mod_select_secondary_outcome_server("select_secondary_outcome_1", selected_primary_outcome, r = r)
-
+  observe({
+    req(r$analysis_results)
+        # r$multivariate_results$all_coefficients(),
+        # r$univariate_results$results(),
+        # r$smd_results$smd_after())
+  print(r$analysis_results)
+  head(analysis_results$ip_weights$data_with_weights)
   # IPW download functionality
-  mod_download_ipw_server("download_ipw_1")
+  mod_download_ipw_server("download_ipw_1",data_with_weights = r$analysis_results$ip_weights$data_with_weights)
 
   # Model Coefficients functionality
-  mod_download_model_coefficients_server("download_model_coefficients_1")
+  mod_download_model_coefficients_server("download_model_coefficients_1",data_model_coefficients = r$analysis_results$multivariate_results$all_coefficients)
 
   # Univariate Analysis functionality
-  mod_download_univariate_analysis_server("download_univariate_analysis_1")
+  mod_download_univariate_analysis_server("download_univariate_analysis_1",data_univariate_results = r$analysis_results$multivariate_results$results )
 
   #SMD Analysis
-  mod_download_smd_analysis_server("download_smd_analysis_1")
+  mod_download_smd_analysis_server("download_smd_analysis_1",data_smd = r$analysis_results$smd_results )
+  })
 
-  #Metabolite ID's along
-  mod_metabolite_along_server("metabolite_along_1")
+    #Metabolite ID's along
+    mod_metabolite_along_server("metabolite_along_1")
 }

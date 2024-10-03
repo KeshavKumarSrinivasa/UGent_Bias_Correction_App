@@ -22,7 +22,7 @@ tagList(
 #' download_ipw Server Function
 #'
 #' @noRd
-mod_download_ipw_server <- function(id){
+mod_download_ipw_server <- function(id,data_with_weights){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
@@ -33,7 +33,8 @@ mod_download_ipw_server <- function(id){
       },
       content = function(file) {
         # Generate random data (rnorm) for the CSV
-        data <- matrix(rnorm(100), ncol = 10)
+        # data <- matrix(rnorm(100), ncol = 10)
+        data <- data_with_weights
         write.csv(data, file, row.names = FALSE)
       }
     )
