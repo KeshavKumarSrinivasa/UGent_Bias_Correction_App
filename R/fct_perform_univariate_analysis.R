@@ -14,7 +14,7 @@ perform_univariate_analysis <- function(train_data,
                                         metabolite_data,
                                         secondary_outcome) {
   # Get vector of metabolites
-  metabolites <- metabolite_data_out %>% select(-c("subjid")) %>% colnames()
+  metabolites <- metabolite_data %>% select(-c("subjid")) %>% colnames()
 
   # Replacing " ", "+" with "_"
   renamed_metabolites <- gsub(" ","_",metabolites)

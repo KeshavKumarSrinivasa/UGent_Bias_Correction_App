@@ -7,10 +7,10 @@
 app_server <- function(input, output, session) {
   r <- reactiveValues()
 
-  analysis_results <- NULL
-
   # Cache the UI so that it can be reused when navigating back to page 5
   cached_analysis_ui <- reactiveVal(NULL)
+
+  analysis_values <- reactiveVal()
 
 
   # Helper function to render analysis page with the analysis module UI
@@ -23,7 +23,17 @@ app_server <- function(input, output, session) {
         )
       })
 
-      r$analysis_results <- mod_view_analysis_server("view_analysis_1",r=r)
+      r$complete_analysis_results <- mod_view_analysis_server("view_analysis_1", r = r)
+      # Use observe or another reactive context to access the reactive value
+
+      observe({
+        req(r$complete_analysis_results())  # Ensure it's not NULL
+        analysis_values(r$complete_analysis_results())  # Access the reactive value using parentheses
+        print("Printing in render_analysis_page")
+        print(names(analysis_values()))  # Print the names of the list returned by analysis_result
+      })
+
+
       cached_analysis_ui(TRUE)
     } else {
       output$pageContent <- renderUI({
@@ -233,23 +243,20 @@ app_server <- function(input, output, session) {
   # selected_primary_outcome <- mod_select_primary_outcome_server("select_primary_outcome_1", r = r)
   # mod_select_secondary_outcome_server("select_secondary_outcome_1", selected_primary_outcome, r = r)
   observe({
-    req(r$analysis_results)
-        # r$multivariate_results$all_coefficients(),
-        # r$univariate_results$results(),
-        # r$smd_results$smd_after())
-  print(r$analysis_results)
-  head(analysis_results$ip_weights$data_with_weights)
+    req(analysis_values())
+    print("Printing in Downloads section.")
+    print(names(analysis_values()))
   # IPW download functionality
-  mod_download_ipw_server("download_ipw_1",data_with_weights = r$analysis_results$ip_weights$data_with_weights)
+  mod_download_ipw_server("download_ipw_1",data_with_weights = analysis_values()$ip_weights$data_with_weights)
 
   # Model Coefficients functionality
-  mod_download_model_coefficients_server("download_model_coefficients_1",data_model_coefficients = r$analysis_results$multivariate_results$all_coefficients)
+  mod_download_model_coefficients_server("download_model_coefficients_1",data_model_coefficients = analysis_values()$multivariate_results$all_coefficients)
 
   # Univariate Analysis functionality
-  mod_download_univariate_analysis_server("download_univariate_analysis_1",data_univariate_results = r$analysis_results$multivariate_results$results )
+  mod_download_univariate_analysis_server("download_univariate_analysis_1",data_univariate_results = analysis_values()$univariate_results$results)
 
   #SMD Analysis
-  mod_download_smd_analysis_server("download_smd_analysis_1",data_smd = r$analysis_results$smd_results )
+  mod_download_smd_analysis_server("download_smd_analysis_1",data_smd = analysis_values()$smd_results )
   })
 
     #Metabolite ID's along

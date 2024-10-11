@@ -81,7 +81,10 @@ mod_view_analysis_server <- function(id,r=r)
       slickR(cached_plots(), width = 800, height = 400) + settings(dots = TRUE)
     })
 
-    return(analysis)
+    # Return the analysis_result reactive
+    return(analysis_result)
+
+
 
   })
 }
