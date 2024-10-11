@@ -8,7 +8,7 @@ app_server <- function(input, output, session) {
   r <- reactiveValues()
 
   # Cache the UI so that it can be reused when navigating back to page 5
-  cached_analysis_ui <- reactiveVal(NULL)
+  cached_analysis_ui <- reactiveVal()
 
   analysis_values <- reactiveVal()
 
@@ -27,10 +27,8 @@ app_server <- function(input, output, session) {
       # Use observe or another reactive context to access the reactive value
 
       observe({
-        req(r$complete_analysis_results())  # Ensure it's not NULL
-        analysis_values(r$complete_analysis_results())  # Access the reactive value using parentheses
-        print("Printing in render_analysis_page")
-        print(names(analysis_values()))  # Print the names of the list returned by analysis_result
+        req(r$complete_analysis_results())
+        analysis_values(r$complete_analysis_results())
       })
 
 
@@ -244,8 +242,7 @@ app_server <- function(input, output, session) {
   # mod_select_secondary_outcome_server("select_secondary_outcome_1", selected_primary_outcome, r = r)
   observe({
     req(analysis_values())
-    print("Printing in Downloads section.")
-    print(names(analysis_values()))
+
   # IPW download functionality
   mod_download_ipw_server("download_ipw_1",data_with_weights = analysis_values()$ip_weights$data_with_weights)
 
