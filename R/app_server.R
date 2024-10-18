@@ -5,12 +5,27 @@
 #' @import shiny
 #' @noRd
 app_server <- function(input, output, session) {
+
   r <- reactiveValues()
+
+  observe({
+    print(paste("First select:", input$firstSelect))
+    print(paste("Second select:", input$secondSelect))
+    print(paste("Radio button selection:", input$fav_language))
+
+    if (!is.null(input$adjust_factors)) {
+      print(paste("Selected checkboxes:", paste(input$adjust_factors, collapse = ", ")))
+    }else{
+      print("No factors adjusted.")
+    }
+    print(paste(rep(c("*"),10),sep = ""))
+  })
 
   # Cache the UI so that it can be reused when navigating back to page 5
   cached_analysis_ui <- reactiveVal()
 
   analysis_values <- reactiveVal()
+
 
 
   # Helper function to render analysis page with the analysis module UI
@@ -80,28 +95,11 @@ app_server <- function(input, output, session) {
   observeEvent(input$next3, {
     output$pageContent <- renderUI({
       htmlTemplate(
-        app_sys("app/www/page3_outcomes.html"),
-        select_primary_outcome = mod_select_primary_outcome_ui("select_primary_outcome_1"),
-        select_secondary_outcome = mod_select_secondary_outcome_ui("select_secondary_outcome_1")
+        app_sys("app/www/page3_outcomes.html")
       )
     })
 
-    # Ensure columns are available before initializing modules
-    observe({
-      req(r$participant_data$participant_dataset_columns())  # Ensure dataset columns are available
 
-      # Call the primary outcome module and capture the selected primary outcome
-      selected_primary_outcome <- mod_select_primary_outcome_server("select_primary_outcome_1", r = r)
-
-      # Call the secondary outcome module and pass the selected primary outcome
-      selected_secondary_outcome <- mod_select_secondary_outcome_server("select_secondary_outcome_1",
-                                                                        selected_primary_outcome,
-                                                                        r = r)
-
-      # Store the selected primary and secondary outcomes in reactive values
-      r$primary_outcome <- selected_primary_outcome
-      r$secondary_outcome <- selected_secondary_outcome
-    })
   })
 
 
@@ -184,24 +182,26 @@ app_server <- function(input, output, session) {
   observeEvent(input$back3, {
     output$pageContent <- renderUI({
       htmlTemplate(
-        app_sys("app/www/page3_outcomes.html"),
-        select_primary_outcome = mod_select_primary_outcome_ui("select_primary_outcome_1"),
-        select_secondary_outcome = mod_select_secondary_outcome_ui("select_secondary_outcome_1")
+        app_sys("app/www/page3_outcomes.html")
       )  # Load Page 3
     })
 
     # Ensure columns are available before initializing modules
     observe({
-      req(r$participant_data$participant_dataset_columns())  # Ensure dataset columns are available before calling the primary outcome module
+      req(r$participant_data$participant_dataset_columns())  # Ensure dataset columns are available
 
-      # Call the primary outcome module
-      selected_primary_outcome <- mod_select_primary_outcome_server("select_primary_outcome_1", r = r)
+      # Call the "select outcome of interest" module and capture the selected primary outcome
+      selected_outcome_of_interest <- mod_select_outcome_of_interest_server("select_outcome_of_interest_1", r = r)
 
       # Call the secondary outcome module and pass the selected primary outcome
-      mod_select_secondary_outcome_server("select_secondary_outcome_1",
-                                          selected_primary_outcome,
-                                          r = r)
+      is_designed_for_another_outcome_input <- mod_is_designed_for_another_outcome_server("is_designed_for_another_outcome_1",
+                                                                                          r = r)
+
+      # Store the selected primary and secondary outcomes in reactive values
+      r$outcome_of_interest <- selected_outcome_of_interest
+      r$designed_for_another_outcome <- is_designed_for_another_outcome_input
     })
+
   })
 
   # Handle navigation back to Page 2 (upload)

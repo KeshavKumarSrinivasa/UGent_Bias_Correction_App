@@ -218,6 +218,20 @@ body {
   height: 100vh; /* Full viewport height */
 }
 
+/* Create three equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 50%;
+  padding: 15px;
+}
 
+.footer_outcome {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #ffffff;
+  text-align: center;
+  padding: 10px;
+}
 
 
