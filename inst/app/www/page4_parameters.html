@@ -3,6 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+.slidecontainer {
+  width: 35%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 25px;
+  background: #CD015B;
+  outline: none;
+  opacity: 1;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 0.95;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #ffffff;
+  border: 2px solid #CD015B; /* Add black border */
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #ffffff;
+  border: 2px solid #CD015B; /* Add black border */
+  cursor: pointer;
+}
+</style>
+
 <link rel="stylesheet" href="w3style.css">
 </head>
 <body>
@@ -18,23 +57,40 @@
 
   <!-- Get Started -->
   <h1> Select Model Parameters</h1>
-  <h2> Number of CV Iterations Value</h2>
-<div id="select_number_of_cv_iterations">
-  {{ select_number_of_cv_iterations }}
+  <h2> Number of CV Iterations Value: <span id="cvIterDisplay"></span></h2>
+<div class="slidecontainer">
+  <input type="range" min="1" max="100" value="10" class="slider" id="cvIter">
 </div>
 
-  <h2> Alpha Value</h2>
-<div id="alpha_slider_container">
-  {{ select_alpha_value }}
+  <h2> Alpha Value: <span id="alphaValueDisplay"></span></h2>
+<div class="slidecontainer">
+  <input type="range" min="0" max="1" value="0.5" step="0.01" class="slider" id="alpha">
 </div>
 
   <br>
     <button class="button" id="back3">Back</button>
     <button class="button" id="next5">Analyse</button>
-</div>
+<script>
+var slider_cvIter = document.getElementById("cvIter");
+var slider_alpha = document.getElementById("alpha");
 
+var cvIter_output = document.getElementById("cvIterDisplay");
+var alphaValue_output = document.getElementById("alphaValueDisplay");
+cvIter_output.innerHTML = slider_cvIter.value;
+alphaValue_output.innerHTML = slider_alpha.value;
 
-</div>
+slider_cvIter.oninput = function() {
+  cvIterValue = this.value;
+  cvIter_output.innerHTML = cvIterValue;
+  Shiny.setInputValue('cv_iter', cvIterValue);
+}
+
+slider_alpha.oninput = function() {
+  alphaValue = this.value;
+  alphaValue_output.innerHTML = alphaValue;
+  Shiny.setInputValue('alpha_value', alphaValue);
+}
+</script>
 
 </body>
 </html>

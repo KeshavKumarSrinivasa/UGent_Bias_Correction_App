@@ -7,6 +7,7 @@
 #' @noRd
 #'
 mod_select_number_of_cv_iterations_ui <- function(id) {
+
   ns <- NS(id)
   sliderInput(ns("number_of_cv_iterations"),
               "Select Number of CV Iterations",
