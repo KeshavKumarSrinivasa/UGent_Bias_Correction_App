@@ -23,7 +23,7 @@ mod_select_number_of_cv_iterations_ui <- function(id) {
 mod_select_number_of_cv_iterations_server <- function(id) {
   moduleServer(id, function(input, output, session){
     # Return a reactive expression with the value of the input
-    return(reactive({ input$number_of_cv_iterations }))
+    return(reactive({ input$cv_iter }))
   })
 }
 

@@ -8,12 +8,28 @@
 get_weights_new_version <- function(combined_data,
                                     train_data,
                                     primary_outcome,
+                                    secondary_outcome,
                                     confounding_bias_variables) {
   weights_new_version <- calculate_new_weights(combined_data,
                                                train_data,
                                                primary_outcome,
+                                               secondary_outcome,
                                                confounding_bias_variables)
-  return(weights_new_version)
+  # Add the combined weights as a new column in the combined_data dataframe
+  combined_data_with_weights <- combined_data %>% mutate(weights = weights_new_version)
+
+  # Filter to match the rows in train_data with weights
+  train_data_with_weights <- combined_data_with_weights %>% filter(rownames(.) %in% rownames(train_data))
+
+  # Return the modified train_data dataframe with weights added
+  return(
+    list(
+      train_weight_values = train_data_with_weights[["weights"]],
+      train_data_with_weights = train_data_with_weights,
+      data_with_weights = combined_data_with_weights,
+      weight_values = combined_data_with_weights[["weights"]]
+    )
+  )
 }
 
 calculate_new_weights <- function(combined_data,

@@ -27,6 +27,7 @@ run_pipeline <- function(participant_data,
                          metabolite_data,
                          primary_outcome,
                          secondary_outcome,
+                         confounding_bias_variables,
                          alpha,
                          cv_iter,
                          metabolite_ids_are_rows,
@@ -49,7 +50,8 @@ run_pipeline <- function(participant_data,
 
   # Step 2: Get Weights
   message("Step 2: Getting weights")
-  ip_weights <- get_weights(combined_data, train_data, primary_outcome)
+  ip_weights <- get_weights_new_version(combined_data, train_data, primary_outcome,secondary_outcome,
+                                        confounding_bias_variables)
 
   # Step 3: Multivariate analysis
   message("Step 3: Performing multivariate analysis")

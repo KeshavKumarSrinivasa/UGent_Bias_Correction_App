@@ -8,18 +8,18 @@ app_server <- function(input, output, session) {
 
   r <- reactiveValues()
 
-  observe({
-    print(paste("First select:", input$firstSelect))
-    print(paste("Second select:", input$secondSelect))
-    print(paste("Radio button selection:", input$fav_language))
-
-    if (!is.null(input$adjust_factors)) {
-      print(paste("Selected checkboxes:", paste(input$adjust_factors, collapse = ", ")))
-    }else{
-      print("No factors adjusted.")
-    }
-    print(paste(rep(c("*"),10),sep = ""))
-  })
+  # observe({
+  #   print(paste("First select:", input$firstSelect))
+  #   print(paste("Second select:", input$secondSelect))
+  #   print(paste("Radio button selection:", input$fav_language))
+  #
+  #   if (!is.null(input$adjust_factors)) {
+  #     print(paste("Selected checkboxes:", paste(input$adjust_factors, collapse = ", ")))
+  #   }else{
+  #     print("No factors adjusted.")
+  #   }
+  #   print(paste(rep(c("*"),10),sep = ""))
+  # })
 
   # Cache the UI so that it can be reused when navigating back to page 5
   cached_analysis_ui <- reactiveVal()
@@ -91,6 +91,8 @@ app_server <- function(input, output, session) {
   # Capture if metabolites are recorded along rows or columns of the dataset
   r$metabolites_are_rows <- mod_metabolite_along_server("metabolite_along_1")
 
+
+
   # Handle navigation to Page 3 (outcomes)
   observeEvent(input$next3, {
     output$pageContent <- renderUI({
@@ -109,9 +111,7 @@ app_server <- function(input, output, session) {
   observeEvent(input$next4, {
     output$pageContent <- renderUI({
       htmlTemplate(
-        app_sys("app/www/page4_parameters.html"),
-        select_number_of_cv_iterations = mod_select_number_of_cv_iterations_ui("select_number_of_cv_iterations_1"),
-        select_alpha_value = mod_select_alpha_value_ui("select_alpha_value_1")
+        app_sys("app/www/page4_parameters.html")
       )  # Load Page 4
     })
   })
@@ -122,7 +122,25 @@ app_server <- function(input, output, session) {
   # Get the alpha value
   r$alpha <- mod_select_alpha_value_server("select_alpha_value_1")
 
+  observe({
+    req(input$fav_language)
+    r$designed_for_another_outcome <- input$fav_language
+    if(r$designed_for_another_outcome){
 
+      r$primary_outcome <- input$secondSelect
+      r$secondary_outcome <- input$firstSelect
+
+    }else{
+      r$primary_outcome <- input$firstSelect
+      r$secondary_outcome <- input$firstSelect
+    }
+
+
+
+    r$confounding_bias_variables <- input$adjust_factors
+    print(r$primary_outcome)
+    print(r$secondary_outcome)
+  })
 
   # Handle navigation to Page 5 (view analysis)
   observeEvent(input$next5, {
@@ -130,11 +148,13 @@ app_server <- function(input, output, session) {
       r$participant_data$participant_dataset_columns(),
       r$metabolomics_data$metabolomics_dataset_columns(),
       r$metabolites_are_rows(),
-      r$primary_outcome(),
-      r$secondary_outcome(),
+      r$primary_outcome,
+      r$secondary_outcome,
+      r$confounding_bias_variables,
       r$cv_iter(),
       r$alpha()
     )
+    print(r$cv_iter())
 
     render_analysis_page(
       # participant_data_in = r$participant_data,
