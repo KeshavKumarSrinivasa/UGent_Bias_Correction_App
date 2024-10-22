@@ -21,8 +21,8 @@ mod_view_analysis_server <- function(id,r=r)
     selected_primary_outcome = r$primary_outcome
     selected_secondary_outcome = r$secondary_outcome
     confounding_bias_variables = r$confounding_bias_variables
-    cv_iter = r$cv_iter()
-    alpha = r$alpha()
+    cv_iter = r$cv_iter
+    alpha_val = r$alpha
 
     ns <- session$ns
 
@@ -37,7 +37,7 @@ mod_view_analysis_server <- function(id,r=r)
                                primary_outcome = selected_primary_outcome,
                                secondary_outcome =  selected_secondary_outcome,
                                confounding_bias_variables = confounding_bias_variables,
-                               alpha = alpha,
+                               alpha_val = alpha_val,
                                cv_iter = cv_iter,
                                metabolite_ids_are_rows = metabolites_are_rows)  # Assuming run_pipeline() returns a list of ggplot objects
       return(analysis)  # Ensure you're returning the correct variable

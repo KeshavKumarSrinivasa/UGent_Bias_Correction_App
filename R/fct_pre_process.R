@@ -19,6 +19,9 @@ pre_process <- function(participant_data, metabolite_data, metabolite_ids_are_ro
     metabolite_data <- take_transpose(metabolite_data)
   }
 
+  #Store participant_data_columns
+  participant_data_columns <- colnames(participant_data)
+
 
 
   # More concise and specific to metabolite data

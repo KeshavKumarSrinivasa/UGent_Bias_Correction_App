@@ -117,10 +117,16 @@ app_server <- function(input, output, session) {
   })
 
   # Get the cv_iter value
-  r$cv_iter <- mod_select_number_of_cv_iterations_server("select_number_of_cv_iterations_1")
+  observe({
+    # r$cv_iter <- mod_select_number_of_cv_iterations_server("select_number_of_cv_iterations_1")
+    r$cv_iter <- input$cv_iter
 
-  # Get the alpha value
-  r$alpha <- mod_select_alpha_value_server("select_alpha_value_1")
+    # Get the alpha value
+    # r$alpha <- mod_select_alpha_value_server("select_alpha_value_1")
+    r$alpha <- input$alpha_value
+
+  })
+
 
   observe({
     req(input$fav_language)
@@ -151,10 +157,14 @@ app_server <- function(input, output, session) {
       r$primary_outcome,
       r$secondary_outcome,
       r$confounding_bias_variables,
-      r$cv_iter(),
-      r$alpha()
+      r$cv_iter,
+      r$alpha
     )
-    print(r$cv_iter())
+    print("The CV Iter is:")
+    print(r$cv_iter)
+
+    print("The alpha value is:")
+    print(r$alpha)
 
     render_analysis_page(
       # participant_data_in = r$participant_data,

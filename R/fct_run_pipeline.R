@@ -28,7 +28,7 @@ run_pipeline <- function(participant_data,
                          primary_outcome,
                          secondary_outcome,
                          confounding_bias_variables,
-                         alpha,
+                         alpha_val,
                          cv_iter,
                          metabolite_ids_are_rows,
                          split_ratio = 0.8) {
@@ -55,11 +55,12 @@ run_pipeline <- function(participant_data,
 
   # Step 3: Multivariate analysis
   message("Step 3: Performing multivariate analysis")
+  message(cv_iter)
   multivariate_results <- perform_multivariate_analysis(
     train_data = train_data,
     test_data = test_data,
     secondary_outcome = secondary_outcome,
-    alpha = alpha,
+    alpha_val = alpha_val,
     cv_iter = cv_iter,
     weights = ip_weights$train_weight_values
   )
@@ -72,7 +73,7 @@ run_pipeline <- function(participant_data,
   message("Step 5: Calculating standardized mean difference")
   smd_results <- calculate_smd_all_covariates(
     participant_data = participant_data,
-    train_data_with_weights = ip_weights$train_data_with_weights,
+    train_data_with_weights = ip_weights$data_with_weights,
     secondary_outcome
   )
 

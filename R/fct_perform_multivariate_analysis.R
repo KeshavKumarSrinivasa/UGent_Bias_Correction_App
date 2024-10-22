@@ -16,7 +16,7 @@ library(dplyr)
 perform_multivariate_analysis <- function(train_data,
                                           test_data,
                                           secondary_outcome,
-                                          alpha,
+                                          alpha_val,
                                           cv_iter,
                                           weights = NULL) {
 
@@ -28,13 +28,15 @@ perform_multivariate_analysis <- function(train_data,
   x <- model.matrix(as.formula(paste(secondary_outcome, "~ . - 1")), data = train_data)  # Create model matrix (no intercept)
   y <- as.factor(train_data[[secondary_outcome]])  # Outcome variable (factor)
 
+  cv_iter <- as.numeric(cv_iter)
+  alpha_val <- as.numeric(alpha_val)
 
   # Run cross-validated glmnet with weights
   cv_fit <- cv.glmnet(
     x,
     y,
     family = "binomial",
-    alpha = alpha,
+    alpha = alpha_val,
     weights = weights,
     nfolds = cv_iter
   )
@@ -66,6 +68,9 @@ perform_multivariate_analysis <- function(train_data,
   auc_value <- ci.auc(roc_obj)[2] # AUC value
   auc_ci <- ci(roc_obj)[c(1,3)] # 95% Confidence interval
 
+  print("******************")
+  print(auc_value)
+
   # Step 5: Calculate confidence intervals for the ROC curve at specific sensitivity levels
   ci <- ci.se(roc_obj, specificities = seq(0, 1, 0.01))
 
@@ -91,7 +96,9 @@ perform_multivariate_analysis <- function(train_data,
     )
 
 
+  print(dim(test_data))
 
+  write.csv(coef_df,"all_coefficients.csv")
 
   # Return the top ten coefficients, AUC value, and the ROC curve plot
   return(
