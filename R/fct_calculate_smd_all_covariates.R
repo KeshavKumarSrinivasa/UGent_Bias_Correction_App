@@ -85,24 +85,41 @@ calculate_smd_all_covariates <- function(participant_data, train_data_with_weigh
       participant_train_data[[covariate]] <- as.factor(participant_train_data[[covariate]])
       levels_covariate <- levels(participant_train_data[[covariate]])
 
+
+      case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Obese")
+      control_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Lean")
+
+      # SMD before weighting: Calculate the proportion of each level in cases and controls
+      p_case <- mean(case_data[[covariate]], na.rm = TRUE)
+      p_control <- mean(control_data[[covariate]], na.rm = TRUE)
+      smd_value_before <- smd_proportions(p_case, p_control)
+
+      # SMD after weighting: Calculate weighted proportions for cases and controls
+      weighted_p_case <- sum(weights_values * (case_data[[covariate]] == level), na.rm = TRUE) / sum(weights_values)
+      weighted_p_control <- sum(weights_values * (control_data[[covariate]] == level), na.rm = TRUE) / sum(weights_values)
+      smd_value_after <- smd_proportions(weighted_p_case, weighted_p_control)
+
+
+
+
       # Loop through each level of the categorical covariate
-      for (level in levels_covariate) {
-        case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Obese")
-        control_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Lean")
-
-        # SMD before weighting: Calculate the proportion of each level in cases and controls
-        p_case <- mean(case_data[[covariate]] == level, na.rm = TRUE)
-        p_control <- mean(control_data[[covariate]] == level, na.rm = TRUE)
-        smd_value_before <- smd_proportions(p_case, p_control)
-
-        # SMD after weighting: Calculate weighted proportions for cases and controls
-        weighted_p_case <- sum(weights_values * (case_data[[covariate]] == level), na.rm = TRUE) / sum(weights_values)
-        weighted_p_control <- sum(weights_values * (control_data[[covariate]] == level), na.rm = TRUE) / sum(weights_values)
-        smd_value_after <- smd_proportions(weighted_p_case, weighted_p_control)
-
-
-      }
-      # Store results for each level of the categorical variable
+      # for (level in levels_covariate) {
+      #   case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Obese")
+      #   control_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Lean")
+      #
+      #   # SMD before weighting: Calculate the proportion of each level in cases and controls
+      #   p_case <- mean(case_data[[covariate]] == level, na.rm = TRUE)
+      #   p_control <- mean(control_data[[covariate]] == level, na.rm = TRUE)
+      #   smd_value_before <- smd_proportions(p_case, p_control)
+      #
+      #   # SMD after weighting: Calculate weighted proportions for cases and controls
+      #   weighted_p_case <- sum(weights_values * (case_data[[covariate]] == level), na.rm = TRUE) / sum(weights_values)
+      #   weighted_p_control <- sum(weights_values * (control_data[[covariate]] == level), na.rm = TRUE) / sum(weights_values)
+      #   smd_value_after <- smd_proportions(weighted_p_case, weighted_p_control)
+      #
+      #
+      # }
+      # # Store results for each level of the categorical variable
       smd_before <- rbind(smd_before, data.frame(covariate = paste0(covariate), smd_value = smd_value_before))
       smd_after <- rbind(smd_after, data.frame(covariate = paste0(covariate), smd_value = smd_value_after))
 

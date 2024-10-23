@@ -12,7 +12,7 @@
 #' @return A list containing 'train', 'test', 'combined_data', 'participant_data', and 'metabolite_data'.
 #'
 #' @noRd
-pre_process <- function(participant_data, metabolite_data, metabolite_ids_are_rows = TRUE, case_control_col = "case_control", split_ratio = 0.8) {
+pre_process <- function(participant_data, metabolite_data, secondary_outcome,metabolite_ids_are_rows = TRUE, case_control_col = "case_control", split_ratio = 0.8) {
 
   # Transpose metabolite data if metabolite IDs are along the rows
   if (metabolite_ids_are_rows) {
@@ -21,7 +21,8 @@ pre_process <- function(participant_data, metabolite_data, metabolite_ids_are_ro
 
   #Store participant_data_columns
   participant_data_columns <- colnames(participant_data)
-
+  columns_to_exclude <- setdiff(participant_data_columns,secondary_outcome)
+  print(columns_to_exclude)
 
 
   # More concise and specific to metabolite data
@@ -39,9 +40,32 @@ pre_process <- function(participant_data, metabolite_data, metabolite_ids_are_ro
   train_index <- createDataPartition(combined_data[[case_control_col]], p = split_ratio, list = FALSE)
 
   # Split into train and test sets
-  train_data <- combined_data[train_index, ]
-  test_data <- combined_data[-train_index, ]
+  # train_data <- combined_data[train_index, ]
+  # test_data <- combined_data[-train_index, ]
+  # train_data <- combined_data %>%
+  #   select(-any_of(columns_to_exclude)) %>%
+  #   filter(rowname %in% train_index) %>%
+  #   select(-all_of("rowname"))
 
+  train_data <- combined_data %>%
+    select(-any_of(columns_to_exclude))
+  train_data <- train_data[train_index,]
+
+
+  test_data <- combined_data %>%
+    select(-any_of(columns_to_exclude))
+  test_data <- test_data[-train_index,]
+
+  print("***********")
+  print("dim(train_data)")
+  print(dim(train_data))
+  print("***********")
+
+
+  print("***********")
+  print("dim(test_data)")
+  print(dim(test_data))
+  print("***********")
   # Return all relevant data
   return(list(train = train_data,
               test = test_data,

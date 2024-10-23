@@ -12,7 +12,8 @@ library(dplyr)
 # Univariate analysis function that returns results and volcano plot
 perform_univariate_analysis <- function(train_data,
                                         metabolite_data,
-                                        secondary_outcome) {
+                                        secondary_outcome,
+                                        weights_values) {
   # Get vector of metabolites
   metabolites <- metabolite_data %>% select(-c("subjid")) %>% colnames()
 
@@ -45,7 +46,7 @@ perform_univariate_analysis <- function(train_data,
     if (col != response_var) {
       # Fit univariate logistic regression model
       formula <- as.formula(paste(response_var, "~", col))
-      model <- glm(formula, data = data_for_univariate_analysis, family = binomial)
+      model <- glm(formula, data = data_for_univariate_analysis, family = binomial,weights = weights_values)
       summary_model <- summary(model)
 
       # Extract estimate, standard error, and p-value for the predictor
@@ -86,6 +87,8 @@ perform_univariate_analysis <- function(train_data,
     labs(title = "Volcano Plot", x = "Effect Size (Estimate)", y = "-log10(FDR)") +
     theme_minimal() +
     theme(legend.position = "none")
+
+  write.csv(results,"univariate_analysis.csv")
 
   # Step 2: Return results and volcano plot
   return(list(results = results, volcano_plot = volcano_plot))

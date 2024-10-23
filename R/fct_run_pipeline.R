@@ -37,6 +37,7 @@ run_pipeline <- function(participant_data,
   processed_data <- pre_process(
     participant_data,
     metabolite_data,
+    secondary_outcome,
     metabolite_ids_are_rows = FALSE,
     case_control_col = "nafld",
     split_ratio = 0.8
@@ -67,7 +68,7 @@ run_pipeline <- function(participant_data,
 
   # Step 4: Univariate analysis
   message("Step 4: Performing univariate analysis")
-  univariate_results <- perform_univariate_analysis(train_data, metabolite_data_out, secondary_outcome)
+  univariate_results <- perform_univariate_analysis(train_data, metabolite_data_out, secondary_outcome,ip_weights$train_weight_values)
 
   # Step 5: Standardized mean difference analysis
   message("Step 5: Calculating standardized mean difference")

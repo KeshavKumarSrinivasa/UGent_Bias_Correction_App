@@ -11,6 +11,7 @@ library(glmnet)
 library(pROC)
 library(ggplot2)
 library(dplyr)
+library(caret)
 
 # Multivariate analysis using glmnet (regularized logistic regression)
 perform_multivariate_analysis <- function(train_data,
@@ -25,6 +26,7 @@ perform_multivariate_analysis <- function(train_data,
   # train_data <- train_data[,-c(which(colnames(train_data)=="subjid"))]
 
   # Create model matrix
+  print(head(train_data[,head(colnames(train_data))]))
   x <- model.matrix(as.formula(paste(secondary_outcome, "~ . - 1")), data = train_data)  # Create model matrix (no intercept)
   y <- as.factor(train_data[[secondary_outcome]])  # Outcome variable (factor)
 
@@ -60,6 +62,10 @@ perform_multivariate_analysis <- function(train_data,
                     newx = test_x,
                     s = "lambda.min",
                     type = "response")
+  y_pred_class <- predict(cv_fit,
+                    newx = test_x,
+                    s = "lambda.min",
+                    type = "class")
   y_pred <- as.vector(y_pred)
   roc_obj <- roc(test_y, y_pred)  # Calculate ROC curve
 
@@ -95,10 +101,19 @@ perform_multivariate_analysis <- function(train_data,
       hjust = 0
     )
 
+  print(y_pred)
+  print(test_y)
+
+  cm <- confusionMatrix(data = as.factor(y_pred_class),
+                        reference = as.factor(test_y))
+  cm <- as.matrix(cm)
+
 
   print(dim(test_data))
 
   write.csv(coef_df,"all_coefficients.csv")
+  write.csv(cm,"confusion_matrix.csv")
+
 
   # Return the top ten coefficients, AUC value, and the ROC curve plot
   return(
@@ -107,7 +122,8 @@ perform_multivariate_analysis <- function(train_data,
       all_coefficients = coef_df,
       auc_value = auc_value,
       auc_ci = auc_ci,
-      roc_plot = roc_plot
+      roc_plot = roc_plot,
+      confusion_matrix = cm
     )
   )
 }
