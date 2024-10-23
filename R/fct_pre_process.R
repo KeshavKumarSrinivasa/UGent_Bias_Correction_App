@@ -56,16 +56,16 @@ pre_process <- function(participant_data, metabolite_data, secondary_outcome,met
     select(-any_of(columns_to_exclude))
   test_data <- test_data[-train_index,]
 
-  print("***********")
-  print("dim(train_data)")
-  print(dim(train_data))
-  print("***********")
-
-
-  print("***********")
-  print("dim(test_data)")
-  print(dim(test_data))
-  print("***********")
+  # print("***********")
+  # print("dim(train_data)")
+  # print(dim(train_data))
+  # print("***********")
+  #
+  #
+  # print("***********")
+  # print("dim(test_data)")
+  # print(dim(test_data))
+  # print("***********")
   # Return all relevant data
   return(list(train = train_data,
               test = test_data,

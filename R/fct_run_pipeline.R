@@ -75,7 +75,8 @@ run_pipeline <- function(participant_data,
   smd_results <- calculate_smd_all_covariates(
     participant_data = participant_data,
     train_data_with_weights = ip_weights$data_with_weights,
-    secondary_outcome
+    secondary_outcome,
+    primary_outcome
   )
 
   # Return processed data

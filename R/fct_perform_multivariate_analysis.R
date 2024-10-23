@@ -26,7 +26,7 @@ perform_multivariate_analysis <- function(train_data,
   # train_data <- train_data[,-c(which(colnames(train_data)=="subjid"))]
 
   # Create model matrix
-  print(head(train_data[,head(colnames(train_data))]))
+  # print(head(train_data[,head(colnames(train_data))]))
   x <- model.matrix(as.formula(paste(secondary_outcome, "~ . - 1")), data = train_data)  # Create model matrix (no intercept)
   y <- as.factor(train_data[[secondary_outcome]])  # Outcome variable (factor)
 
@@ -74,8 +74,8 @@ perform_multivariate_analysis <- function(train_data,
   auc_value <- ci.auc(roc_obj)[2] # AUC value
   auc_ci <- ci(roc_obj)[c(1,3)] # 95% Confidence interval
 
-  print("******************")
-  print(auc_value)
+  # print("******************")
+  # print(auc_value)
 
   # Step 5: Calculate confidence intervals for the ROC curve at specific sensitivity levels
   ci <- ci.se(roc_obj, specificities = seq(0, 1, 0.01))
@@ -101,15 +101,15 @@ perform_multivariate_analysis <- function(train_data,
       hjust = 0
     )
 
-  print(y_pred)
-  print(test_y)
+  # print(y_pred)
+  # print(test_y)
 
   cm <- confusionMatrix(data = as.factor(y_pred_class),
                         reference = as.factor(test_y))
   cm <- as.matrix(cm)
 
 
-  print(dim(test_data))
+  # print(dim(test_data))
 
   write.csv(coef_df,"all_coefficients.csv")
   write.csv(cm,"confusion_matrix.csv")

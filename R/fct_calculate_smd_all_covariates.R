@@ -17,7 +17,7 @@
 library(dplyr)
 
 # Function to calculate SMD with respect to secondary outcome for all covariates
-calculate_smd_all_covariates <- function(participant_data, train_data_with_weights, secondary_outcome) {
+calculate_smd_all_covariates <- function(participant_data, train_data_with_weights, secondary_outcome,primary_outcome) {
 
   covariates <- participant_data %>% select(-c(subjid,secondary_outcome)) %>% colnames()
   print("covariates")
@@ -44,6 +44,9 @@ calculate_smd_all_covariates <- function(participant_data, train_data_with_weigh
   smd_before <- data.frame(covariate = character(), smd_value = numeric(), stringsAsFactors = FALSE)
   smd_after <- data.frame(covariate = character(), smd_value = numeric(), stringsAsFactors = FALSE)
 
+
+
+
   # Loop through each covariate to calculate SMD before and after weighting
   for (covariate in covariates) {
     print("Working on")
@@ -54,11 +57,18 @@ calculate_smd_all_covariates <- function(participant_data, train_data_with_weigh
       participant_train_data[[covariate]] <- as.integer(as.factor(participant_train_data[[covariate]]))
     }
     if(TRUE){
-      # Continuous covariate: Calculate SMD using means and variances
 
       # Filter case and control groups
-      case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Obese")
-      control_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Lean")
+      if(secondary_outcome==primary_outcome){
+        case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Case")
+        control_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Control")
+      }else{
+        case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Obese")
+        control_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Lean")
+      }
+
+      # Continuous covariate: Calculate SMD using means and variances
+
 
       # SMD before weighting: Calculate mean and variance for cases and controls
       mean_case <- mean(case_data[[covariate]], na.rm = TRUE)
@@ -86,8 +96,8 @@ calculate_smd_all_covariates <- function(participant_data, train_data_with_weigh
       levels_covariate <- levels(participant_train_data[[covariate]])
 
 
-      case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Obese")
-      control_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Lean")
+      # case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Obese")
+      # control_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Lean")
 
       # SMD before weighting: Calculate the proportion of each level in cases and controls
       p_case <- mean(case_data[[covariate]], na.rm = TRUE)
@@ -124,7 +134,7 @@ calculate_smd_all_covariates <- function(participant_data, train_data_with_weigh
       smd_after <- rbind(smd_after, data.frame(covariate = paste0(covariate), smd_value = smd_value_after))
 
     }
-    print("****************")
+    # print("****************")
   }
   print("****************")
   print("smd_before")
