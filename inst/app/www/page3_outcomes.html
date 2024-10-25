@@ -20,12 +20,7 @@
   <div class="column">
     <h3>What is the outcome of interest?</h3>
     <select name="outcome" id="firstSelect" onchange="updateSecondSelect(); updateCheckboxes();">
-      <option value="subjid">Subjid</option>
-      <option value="sex">Sex</option>
-      <option value="obese">Obese</option>
-      <option value="nafld">NAFLD</option>
-      <option value="age">Age</option>
-      <option value="bmizscore">BMIzscore</option>
+      <!-- Options will be populated dynamically from Shiny -->
     </select>
 
     <h3>Was this study designed for some other outcome?</h3>
@@ -38,12 +33,7 @@
     <div class="actual_outcome_of_study" id="outcome_study" name="question" style="display: none;">
       <h3>What was the study designed for?</h3>
       <select name="outcome" id="secondSelect" onchange="updateCheckboxes();">
-        <option value="subjid">Subjid</option>
-        <option value="sex">Sex</option>
-        <option value="obese">Obese</option>
-        <option value="nafld">NAFLD</option>
-        <option value="age">Age</option>
-        <option value="bmizscore">BMIzscore</option>
+        <!-- Options will be populated dynamically from Shiny -->
       </select>
     </div>
     <br>
@@ -54,6 +44,12 @@
     <!-- Ensure the heading is preserved -->
   </div>
 
+  <!-- Debugging div to print the received data -->
+  <div id="debug" style="background-color: lightgray; padding: 10px; margin-top: 20px;">
+    <h3>Debug Output:</h3>
+    <pre id="debugOutput">Waiting for data...</pre>  <!-- This will display the received data -->
+  </div>
+
   <div class="footer_outcome">
     <button class="button" id="back2">Back</button>
     <button class="button" id="next4">Next</button>
@@ -61,8 +57,8 @@
 </div>
 
 <script>
+  let options = ["Apple", "Orange"];  // Declare 'options' globally to be updated by the Shiny message
   let checkboxesCreated = false;
-  const options = ["subjid", "sex", "obese", "nafld", "age", "bmizscore"];  // Updated options
 
   // Function to hide the second outcome select if the "No" radio button is selected
   function hideOutcomeQuestion() {
@@ -85,13 +81,6 @@
     showOutcomeQuestion();
   });
 
-  // Set up event listener for first select dropdown
-  document.getElementById('firstSelect').addEventListener('change', function() {
-    Shiny.setInputValue('firstSelect', this.value);
-    updateSecondSelect();
-    updateCheckboxes();
-  });
-
   // Function to dynamically update the second select dropdown
   function updateSecondSelect() {
     const firstSelect = document.getElementById("firstSelect");
@@ -100,6 +89,7 @@
     // Clear second select options
     secondSelect.innerHTML = '';
 
+    // Options will be dynamically updated based on the selected first outcome
     options.forEach(option => {
       if (firstSelect.value !== option) {
         const opt = document.createElement("option");
@@ -121,6 +111,12 @@
     // Clear previous checkboxes
     container.innerHTML = '';
 
+    // Ensure that options is defined before proceeding
+    if (typeof options === 'undefined' || options.length === 0) {
+        console.error("No options available for checkboxes.");
+        return;
+    }
+
     // Add the heading inside the checkbox container
     const heading = document.createElement("h3");
     heading.innerHTML = "What factors in metadata should be adjusted for?";
@@ -128,35 +124,53 @@
 
     // Create checkboxes based on the selected options
     options.forEach(option => {
-      if (firstSelect.value !== option && (!secondSelect || secondSelect.value !== option)) {
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.id = option;
-        checkbox.name = "adjust_factors"; // Same name for group capture
-        checkbox.value = option;
+        if (firstSelect.value !== option && (!secondSelect || secondSelect.value !== option)) {
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = option;
+            checkbox.name = "adjust_factors"; // Same name for group capture
+            checkbox.value = option;
 
-        // Add event listener to each checkbox to communicate with Shiny
-        checkbox.addEventListener('change', function() {
-          let selectedCheckboxes = Array.from(document.querySelectorAll('input[name="adjust_factors"]:checked')).map(cb => cb.value);
-          Shiny.setInputValue('adjust_factors', selectedCheckboxes);
-        });
+            // Add event listener to each checkbox to communicate with Shiny
+            checkbox.addEventListener('change', function() {
+                let selectedCheckboxes = Array.from(document.querySelectorAll('input[name="adjust_factors"]:checked')).map(cb => cb.value);
+                Shiny.setInputValue('adjust_factors', selectedCheckboxes);
+            });
 
-        const label = document.createElement("label");
-        label.htmlFor = option;
-        label.appendChild(document.createTextNode(option.charAt(0).toUpperCase() + option.slice(1)));
+            const label = document.createElement("label");
+            label.htmlFor = option;
+            label.appendChild(document.createTextNode(option.charAt(0).toUpperCase() + option.slice(1)));
 
-        container.appendChild(checkbox);
-        container.appendChild(label);
-        container.appendChild(document.createElement("br"));
-      }
+            container.appendChild(checkbox);
+            container.appendChild(label);
+            container.appendChild(document.createElement("br"));
+        }
     });
   }
 
-  // Initialize the page with default settings
-  window.onload = function() {
+  // Shiny custom message handler to receive options
+  Shiny.addCustomMessageHandler("updateOptions", function(data) {
+    console.log("Received options from Shiny:", data.options);
+
+    // Ensure options are defined and not empty, otherwise use fallback
+    if (data.options && data.options.length > 0) {
+      options = data.options;
+    } else {
+      console.log("No options received or options array is empty. Using fallback options.");
+      options = ["Apple", "Orange"];
+    }
+
+    // After assigning options, update the dropdowns and checkboxes
     updateSecondSelect();
     updateCheckboxes();
 
+    // Debugging: Display the received data in the debug output
+    document.getElementById("debugOutput").textContent = JSON.stringify(data, null, 2);
+  });
+
+  // Function to handle the page load
+  window.onload = function() {
+    // Initialize radio button behavior on load
     var selectedValue = document.querySelector('input[name="fav_language"]:checked').value;
     if (selectedValue === "True") {
       showOutcomeQuestion();
@@ -164,8 +178,8 @@
       hideOutcomeQuestion();
     }
   };
-
 </script>
+
 
 </body>
 </html>

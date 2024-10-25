@@ -92,17 +92,33 @@ app_server <- function(input, output, session) {
   r$metabolites_are_rows <- mod_metabolite_along_server("metabolite_along_1")
 
 
-
   # Handle navigation to Page 3 (outcomes)
   observeEvent(input$next3, {
+    req(r$participant_data$participant_dataset_columns())
+    participant_data_columns <- r$participant_data$participant_dataset_columns()
+
+    # First render the UI
     output$pageContent <- renderUI({
       htmlTemplate(
         app_sys("app/www/page3_outcomes.html")
       )
     })
 
+    # Use `shinyjs::runjs` to ensure the message is sent after the page is fully rendered and loaded
+    shinyjs::runjs("
+    Shiny.onInputChange('pageReady', Math.random());
+  ")
 
+    # Send custom message only when the client notifies that the page is ready
+    observeEvent(input$pageReady, {
+      print("participant_data_columns")
+      print(participant_data_columns)
+
+      # Now send the custom message after the page is fully loaded
+      session$sendCustomMessage(type = "updateOptions", message = list(options = participant_data_columns))
+    })
   })
+
 
 
 

@@ -6,9 +6,7 @@
 #' @noRd
 app_ui <- function(request) {
   tagList(
-    # Leave this function for adding external resources
     golem_add_external_resources(),
-    # Your application UI logic
     fluidPage(
       uiOutput("pageContent")  # Dynamically display HTML content here
     )
@@ -27,9 +25,6 @@ golem_add_external_resources <- function() {
   add_resource_path("www", app_sys("app/www"))
 
   tags$head(
-    # Remove manually added Shiny JS and CSS if present
-    # tags$link(rel = "stylesheet", type = "text/css", href = "shared/shiny.min.css"),
-    # tags$script(src = "shared/shiny.min.js"),
 
     tags$link(rel = "stylesheet", type = "text/css", href = "www/w3style.css"),  # Your custom CSS
     favicon(),  # Add your favicon if needed
