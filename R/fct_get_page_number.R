@@ -6,5 +6,5 @@
 #'
 #' @noRd
 get_page_number <- function(currentPage) {
-  as.integer(sub("page", "", isolate(currentPage())))
+  as.integer(sub("page", "", currentPage))
 }
