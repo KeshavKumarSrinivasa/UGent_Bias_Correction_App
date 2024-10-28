@@ -8,4 +8,8 @@ $(document).on('shiny:connected', function() {
     Shiny.setInputValue('back', Math.random());
   });
 
+  $(document).on('click', '#back_to_home', function() {
+    Shiny.setInputValue('back_to_home', Math.random());
+  });
+
 });

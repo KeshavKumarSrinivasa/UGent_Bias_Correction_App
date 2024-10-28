@@ -6,7 +6,7 @@
 #' @noRd
 app_server <- function(input, output, session) {
   #Storing the current page number.
-  currentPage <- reactiveVal("page0")
+  currentPage <- reactiveVal("page1")
 
   # Functions to switch to next/back pages.
   observeEvent(input$next_page, {
@@ -16,6 +16,11 @@ app_server <- function(input, output, session) {
 
   observeEvent(input$back, {
     new_page <- paste0("page", max(get_page_number(currentPage()) - 1, 0))
+    currentPage(new_page)
+  })
+
+  observeEvent(input$back_to_home, {
+    new_page <- "page0"
     currentPage(new_page)
   })
 
