@@ -6,56 +6,67 @@
   <link rel="stylesheet" href="w3style.css">
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/shiny/1.6.0/shiny.min.js"></script> <!-- Add Shiny's JS library -->
+ <script>
+    console.log("Page 3 loaded.");
+
+    // Custom message handler for changing background color
+  Shiny.addCustomMessageHandler('background-color', function(message) {
+    console.log("Received colors from server:", message.colors);
+    document.body.style.backgroundColor = message.colors[Math.floor(Math.random() * 10)];
+  });
+  </script>
 </head>
-<body class="secondary">
-<!-- Outcomes page -->
-<div class="page3">
-  <!-- Header -->
-  <div class="header">
-      <button class="close_button" id="back_to_home">&#x00D7;</button>
-      <h1><span class="repurpose-symbol">&#x267A;</span></h1>
-  </div>
+<body>
 
-  <!-- Get Started -->
-  <div class="column">
-    <h3>What is the outcome of interest?</h3>
-    <select name="outcome" id="firstSelect" onchange="updateSecondSelect(); updateCheckboxes();">
-      <!-- Options will be populated dynamically from Shiny -->
-    </select>
+<div class="secondary">
+  <!-- Outcomes page -->
+  <div class="page3">
+    <!-- Header -->
+    <div class="header">
+        <button class="close_button" id="back_to_home">&#x00D7;</button>
+        <h1><span class="repurpose-symbol">&#x267A;</span></h1>
+    </div>
 
-    <h3>Was this study designed for some other outcome?</h3>
-    <input type="radio" id="no" name="fav_language" value="False" checked="checked">
-    <label for="no">No</label><br>
-    <input type="radio" id="yes" name="fav_language" value="True">
-    <label for="yes">Yes</label><br>
-
-    <!-- This question should only appear when "Yes" is selected -->
-    <div class="actual_outcome_of_study" id="outcome_study" name="question" style="display: none;">
-      <h3>What was the study designed for?</h3>
-      <select name="outcome" id="secondSelect" onchange="updateCheckboxes();">
+    <!-- Get Started -->
+    <div class="column">
+      <h3>What is the outcome of interest?</h3>
+      <select name="outcome" id="firstSelect" onchange="updateSecondSelect(); updateCheckboxes();">
         <!-- Options will be populated dynamically from Shiny -->
       </select>
+
+      <h3>Was this study designed for some other outcome?</h3>
+      <input type="radio" id="no" name="fav_language" value="False" checked="checked">
+      <label for="no">No</label><br>
+      <input type="radio" id="yes" name="fav_language" value="True">
+      <label for="yes">Yes</label><br>
+
+      <!-- This question should only appear when "Yes" is selected -->
+      <div class="actual_outcome_of_study" id="outcome_study" name="question" style="display: none;">
+        <h3>What was the study designed for?</h3>
+        <select name="outcome" id="secondSelect" onchange="updateCheckboxes();">
+          <!-- Options will be populated dynamically from Shiny -->
+        </select>
+      </div>
+      <br>
     </div>
-    <br>
-  </div>
 
-  <!-- Checkboxes should always appear -->
-  <div class="column" id="checkbox_question">
-    <!-- Ensure the heading is preserved -->
-  </div>
+    <!-- Checkboxes should always appear -->
+    <div class="column" id="checkbox_question">
+      <!-- Ensure the heading is preserved -->
+    </div>
 
-  <!-- Debugging div to print the received data -->
-  <div id="debug" style="background-color: lightgray; padding: 10px; margin-top: 20px;">
-    <h3>Debug Output:</h3>
-    <pre id="debugOutput">Waiting for data...</pre>  <!-- This will display the received data -->
-  </div>
+    <!-- Debugging div to print the received data -->
+    <div id="debug" style="background-color: lightgray; padding: 10px; margin-top: 20px;">
+      <h3>Debug Output:</h3>
+      <pre id="debugOutput">Waiting for data...</pre>  <!-- This will display the received data -->
+    </div>
 
-  <div class="footer_outcome">
-    <button class="button" id="back2">Back</button>
-    <button class="button" id="next4">Next</button>
+    <div class="footer_outcome">
+      <button class="button" id="back">Back</button>
+      <button class="button" id="next_page">Next</button>
+    </div>
   </div>
 </div>
-
 <script>
   let options = ["Apple", "Orange"];  // Declare 'options' globally to be updated by the Shiny message
   let checkboxesCreated = false;
