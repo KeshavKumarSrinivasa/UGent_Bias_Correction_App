@@ -5,10 +5,13 @@
 #' @import shiny
 #' @noRd
 app_server <- function(input, output, session) {
+  #Storing the user responses.
+  r <- reactiveValues()
+
   #Storing the current page number.
   currentPage <- reactiveVal("page0")
 
-  # Functions to switch to next/back pages.
+  # To observe naivgation buttons.
   observeEvent(input$next_page, {
     new_page <- paste0("page", get_page_number(currentPage()) + 1)
     currentPage(new_page)
@@ -24,6 +27,7 @@ app_server <- function(input, output, session) {
     currentPage(new_page)
   })
 
+
   # functions to load the respective pages based on page numbers.
   output$pageContent <- renderUI({
     switch(
@@ -38,6 +42,17 @@ app_server <- function(input, output, session) {
     )
   })
 
+  observeEvent(currentPage(), {
+    switch(
+      currentPage(),
+      "page1" = mod_welcome_page_server("welcome_page_1"),
+      "page2" = mod_upload_data_page_server("upload_data_page_1",r),
+      "page3" = mod_select_outcomes_page_server("select_outcomes_page_1",r,currentPage()),
+      "page4" = mod_select_parameters_page_server("select_parameters_page_1",r),
+      "page5" = mod_analysis_results_page_server("analysis_results_page_1",r),
+      "page6" = mod_downloads_page_server("downloads_page_1",r)
+    )
+  })
 
 
 

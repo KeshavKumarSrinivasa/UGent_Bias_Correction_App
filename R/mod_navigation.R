@@ -18,7 +18,7 @@ mod_navigation_ui <- function(id) {
 mod_navigation_server <- function(id,currentPage){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
-    print(isolate(currentPage()))
+    # print(isolate(currentPage()))
 
     # Functions to switch to next/back pages.
     observeEvent(input$next_page, {

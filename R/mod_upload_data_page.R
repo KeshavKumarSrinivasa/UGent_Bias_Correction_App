@@ -20,14 +20,14 @@ mod_upload_data_page_ui <- function(id) {
 #' upload_data_page Server Functions
 #'
 #' @noRd
-mod_upload_data_page_server <- function(id){
+mod_upload_data_page_server <- function(id,r){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
     # Call the server function for each submodule and capture their outputs
-    metabolomics_data <- mod_metabolomics_upload_server("metabolomics_upload")
-    participant_data <- mod_participant_upload_server("participant_upload")
-    metabolites_are_rows <- mod_metabolite_along_server("metabolite_along_1")
+    r$metabolomics_data <- mod_metabolomics_upload_server("metabolomics_upload")
+    r$participant_data <- mod_participant_upload_server("participant_upload")
+    r$metabolites_are_rows <- mod_metabolite_along_server("metabolite_along_1")
 
   })
 }

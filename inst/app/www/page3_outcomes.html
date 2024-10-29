@@ -6,15 +6,24 @@
   <link rel="stylesheet" href="w3style.css">
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/shiny/1.6.0/shiny.min.js"></script> <!-- Add Shiny's JS library -->
- <script>
-    console.log("Page 3 loaded.");
+<script>
+  console.log("Page 3 loaded.");
 
-    // Custom message handler for changing background color
+  // Custom message handler for changing background color
   Shiny.addCustomMessageHandler('background-color', function(message) {
     console.log("Received colors from server:", message.colors);
-    document.body.style.backgroundColor = message.colors[Math.floor(Math.random() * 10)];
+    // Check if the message contains colors
+    if (message.colors && message.colors.length > 0) {
+      // Randomly select a color from the provided list
+      var randomColor = message.colors[Math.floor(Math.random() * message.colors.length)];
+      // Set the background color
+      document.querySelector('.secondary').style.backgroundColor = randomColor;
+      console.log("Background color changed to:", randomColor);
+    } else {
+      console.log("No colors received from the server.");
+    }
   });
-  </script>
+</script>
 </head>
 <body>
 
@@ -32,12 +41,16 @@
       <h3>What is the outcome of interest?</h3>
       <select name="outcome" id="firstSelect" onchange="updateSecondSelect(); updateCheckboxes();">
         <!-- Options will be populated dynamically from Shiny -->
+            <option value="apple">Apple</option>
+    <option value="orange">Orange</option>
+    <option value="vegetable">Vegetable</option>
+<option value="nut">Nut</option>
       </select>
 
       <h3>Was this study designed for some other outcome?</h3>
-      <input type="radio" id="no" name="fav_language" value="False" checked="checked">
+      <input type="radio" id="no" name="display_other_outcomes" value="False" checked="checked">
       <label for="no">No</label><br>
-      <input type="radio" id="yes" name="fav_language" value="True">
+      <input type="radio" id="yes" name="display_other_outcomes" value="True">
       <label for="yes">Yes</label><br>
 
       <!-- This question should only appear when "Yes" is selected -->
@@ -55,11 +68,6 @@
       <!-- Ensure the heading is preserved -->
     </div>
 
-    <!-- Debugging div to print the received data -->
-    <div id="debug" style="background-color: lightgray; padding: 10px; margin-top: 20px;">
-      <h3>Debug Output:</h3>
-      <pre id="debugOutput">Waiting for data...</pre>  <!-- This will display the received data -->
-    </div>
 
     <div class="footer_outcome">
       <button class="button" id="back">Back</button>
@@ -68,7 +76,7 @@
   </div>
 </div>
 <script>
-  let options = ["Apple", "Orange"];  // Declare 'options' globally to be updated by the Shiny message
+  let options = ["Apple", "Orange","Vegetable","Nut"];  // Declare 'options' globally to be updated by the Shiny message
   let checkboxesCreated = false;
 
   // Function to hide the second outcome select if the "No" radio button is selected
@@ -83,12 +91,12 @@
 
   // Set up event listeners for the radio buttons to communicate with Shiny
   document.getElementById('no').addEventListener('click', function() {
-    Shiny.setInputValue('fav_language', 'False');
+    //Shiny.setInputValue('display_other_outcomes', 'False');
     hideOutcomeQuestion();
   });
 
   document.getElementById('yes').addEventListener('click', function() {
-    Shiny.setInputValue('fav_language', 'True');
+    //Shiny.setInputValue('display_other_outcomes', 'True');
     showOutcomeQuestion();
   });
 
@@ -110,7 +118,7 @@
       }
     });
 
-    Shiny.setInputValue('secondSelect', secondSelect.value);
+    //Shiny.setInputValue('secondSelect', secondSelect.value);
   }
 
   // Function to dynamically create checkboxes and send the values to Shiny
@@ -143,10 +151,10 @@
             checkbox.value = option;
 
             // Add event listener to each checkbox to communicate with Shiny
-            checkbox.addEventListener('change', function() {
-                let selectedCheckboxes = Array.from(document.querySelectorAll('input[name="adjust_factors"]:checked')).map(cb => cb.value);
-                Shiny.setInputValue('adjust_factors', selectedCheckboxes);
-            });
+            //checkbox.addEventListener('change', function() {
+                //let selectedCheckboxes = Array.from(document.querySelectorAll('input[name="adjust_factors"]:checked')).map(cb => cb.value);
+                //Shiny.setInputValue('adjust_factors', selectedCheckboxes);
+            //});
 
             const label = document.createElement("label");
             label.htmlFor = option;
@@ -160,24 +168,24 @@
   }
 
   // Shiny custom message handler to receive options
-  Shiny.addCustomMessageHandler("updateOptions", function(data) {
-    console.log("Received options from Shiny:", data.options);
+  // Shiny.addCustomMessageHandler("updateOptions", function(data) {
+    //console.log("Received options from Shiny:", data.options);
 
     // Ensure options are defined and not empty, otherwise use fallback
-    if (data.options && data.options.length > 0) {
-      options = data.options;
-    } else {
-      console.log("No options received or options array is empty. Using fallback options.");
-      options = ["Apple", "Orange"];
-    }
+    //if (data.options && data.options.length > 0) {
+    //  options = data.options;
+    //} else {
+    //  console.log("No options received or options array is empty. Using fallback options.");
+    //  options = ["Apple", "Orange"];
+    //}
 
     // After assigning options, update the dropdowns and checkboxes
-    updateSecondSelect();
-    updateCheckboxes();
+    //updateSecondSelect();
+    //updateCheckboxes();
 
     // Debugging: Display the received data in the debug output
-    document.getElementById("debugOutput").textContent = JSON.stringify(data, null, 2);
-  });
+    //document.getElementById("debugOutput").textContent = JSON.stringify(data, null, 2);
+  //});
 
   // Function to handle the page load
   window.onload = function() {

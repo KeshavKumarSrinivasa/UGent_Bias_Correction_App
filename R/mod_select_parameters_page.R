@@ -15,7 +15,7 @@ mod_select_parameters_page_ui <- function(id) {
 #' select_parameters_page Server Functions
 #'
 #' @noRd
-mod_select_parameters_page_server <- function(id){
+mod_select_parameters_page_server <- function(id,r){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 

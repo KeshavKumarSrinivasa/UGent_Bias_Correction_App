@@ -15,12 +15,17 @@ mod_select_outcomes_page_ui <- function(id) {
 #' select_outcomes_page Server Functions
 #'
 #' @noRd
-mod_select_outcomes_page_server <- function(id){
+mod_select_outcomes_page_server <- function(id,r,currentPage){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
-    session$sendCustomMessage("background-color", list(colors = rainbow(10)))
-
-
+    # Observe the current page or some other trigger to update colors
+    observeEvent(currentPage, {
+      if (currentPage == "page3") {
+        # Send the custom message
+        session$sendCustomMessage("background-color", list(colors = rainbow(10)))
+        cat("Background color message sent for page3.\n")
+      }
+    })
   })
 }
 

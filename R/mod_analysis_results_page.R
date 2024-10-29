@@ -16,9 +16,40 @@ mod_analysis_results_page_ui <- function(id) {
 #' analysis_results_page Server Functions
 #'
 #' @noRd
-mod_analysis_results_page_server <- function(id){
+mod_analysis_results_page_server <- function(id,r){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
+
+    # Reactive value to cache analysis results
+    analysis_result <- reactiveVal(NULL)
+
+    # Run the analysis if not already cached
+    observe({
+      if (is.null(analysis_result())) {
+        analysis_result(perform_analysis())  # Run and store the result
+      }
+    })
+
+    # Reactive value to cache generated PNG plots
+    cached_plots <- reactiveVal(NULL)
+
+    observe({
+      # Generate PNGs only if not cached
+      if (is.null(cached_plots())) {
+        req(analysis_result())
+        # Get ggplots as png_files from the analysis result
+          png_files <- save_plots_as_png()
+          cached_plots(png_files)  # Cache the list of PNG file paths
+        }
+    })
+
+    # Render slickR with the generated PNG images
+    output$slickr_panel <- renderSlickR({
+      slickR(cached_plots(), width = 800, height = 400) + settings(dots = TRUE)
+    })
+
+    # Return the analysis_result reactive
+    return(analysis_result())
 
   })
 }

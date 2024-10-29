@@ -20,7 +20,7 @@ mod_downloads_page_ui <- function(id) {
 #' downloads_page Server Functions
 #'
 #' @noRd
-mod_downloads_page_server <- function(id){
+mod_downloads_page_server <- function(id,r){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
