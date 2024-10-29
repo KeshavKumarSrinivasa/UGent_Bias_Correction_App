@@ -47,7 +47,7 @@ app_server <- function(input, output, session) {
       currentPage(),
       "page1" = mod_welcome_page_server("welcome_page_1"),
       "page2" = mod_upload_data_page_server("upload_data_page_1",r),
-      "page3" = mod_select_outcomes_page_server("select_outcomes_page_1",r,currentPage()),
+      "page3" = mod_select_outcomes_page_server("select_outcomes_page_1",r),
       "page4" = mod_select_parameters_page_server("select_parameters_page_1",r),
       "page5" = mod_analysis_results_page_server("analysis_results_page_1",r),
       "page6" = mod_downloads_page_server("downloads_page_1",r)

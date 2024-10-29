@@ -8,21 +8,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/shiny/1.6.0/shiny.min.js"></script> <!-- Add Shiny's JS library -->
 <script>
   console.log("Page 3 loaded.");
-
-  // Custom message handler for changing background color
-  Shiny.addCustomMessageHandler('background-color', function(message) {
-    console.log("Received colors from server:", message.colors);
-    // Check if the message contains colors
-    if (message.colors && message.colors.length > 0) {
-      // Randomly select a color from the provided list
-      var randomColor = message.colors[Math.floor(Math.random() * message.colors.length)];
-      // Set the background color
-      document.querySelector('.secondary').style.backgroundColor = randomColor;
-      console.log("Background color changed to:", randomColor);
-    } else {
-      console.log("No colors received from the server.");
-    }
-  });
 </script>
 </head>
 <body>
@@ -39,26 +24,15 @@
     <!-- Get Started -->
     <div class="column">
       <h3>What is the outcome of interest?</h3>
-      <select name="outcome" id="firstSelect" onchange="updateSecondSelect(); updateCheckboxes();">
-        <!-- Options will be populated dynamically from Shiny -->
-            <option value="apple">Apple</option>
-    <option value="orange">Orange</option>
-    <option value="vegetable">Vegetable</option>
-<option value="nut">Nut</option>
-      </select>
+      {{participant_data_covariates}}
 
       <h3>Was this study designed for some other outcome?</h3>
-      <input type="radio" id="no" name="display_other_outcomes" value="False" checked="checked">
-      <label for="no">No</label><br>
-      <input type="radio" id="yes" name="display_other_outcomes" value="True">
-      <label for="yes">Yes</label><br>
+      {{study_for_another_outcome}}
 
       <!-- This question should only appear when "Yes" is selected -->
       <div class="actual_outcome_of_study" id="outcome_study" name="question" style="display: none;">
         <h3>What was the study designed for?</h3>
-        <select name="outcome" id="secondSelect" onchange="updateCheckboxes();">
-          <!-- Options will be populated dynamically from Shiny -->
-        </select>
+        {{participant_data_remaining_covariates}}
       </div>
       <br>
     </div>
@@ -66,6 +40,8 @@
     <!-- Checkboxes should always appear -->
     <div class="column" id="checkbox_question">
       <!-- Ensure the heading is preserved -->
+        <h3>Select the columns to adjust for:</h3>
+      {{participant_columns_to_adjust}}
     </div>
 
 
@@ -75,130 +51,6 @@
     </div>
   </div>
 </div>
-<script>
-  let options = ["Apple", "Orange","Vegetable","Nut"];  // Declare 'options' globally to be updated by the Shiny message
-  let checkboxesCreated = false;
-
-  // Function to hide the second outcome select if the "No" radio button is selected
-  function hideOutcomeQuestion() {
-    document.getElementById("outcome_study").style.display = "none";
-  }
-
-  // Function to show the second outcome select if the "Yes" radio button is selected
-  function showOutcomeQuestion() {
-    document.getElementById("outcome_study").style.display = "block";
-  }
-
-  // Set up event listeners for the radio buttons to communicate with Shiny
-  document.getElementById('no').addEventListener('click', function() {
-    //Shiny.setInputValue('display_other_outcomes', 'False');
-    hideOutcomeQuestion();
-  });
-
-  document.getElementById('yes').addEventListener('click', function() {
-    //Shiny.setInputValue('display_other_outcomes', 'True');
-    showOutcomeQuestion();
-  });
-
-  // Function to dynamically update the second select dropdown
-  function updateSecondSelect() {
-    const firstSelect = document.getElementById("firstSelect");
-    const secondSelect = document.getElementById("secondSelect");
-
-    // Clear second select options
-    secondSelect.innerHTML = '';
-
-    // Options will be dynamically updated based on the selected first outcome
-    options.forEach(option => {
-      if (firstSelect.value !== option) {
-        const opt = document.createElement("option");
-        opt.value = option;
-        opt.text = option.charAt(0).toUpperCase() + option.slice(1); 
-        secondSelect.add(opt);
-      }
-    });
-
-    //Shiny.setInputValue('secondSelect', secondSelect.value);
-  }
-
-  // Function to dynamically create checkboxes and send the values to Shiny
-  function updateCheckboxes() {
-    const firstSelect = document.getElementById("firstSelect");
-    const secondSelect = document.getElementById("secondSelect");
-    const container = document.getElementById("checkbox_question");
-
-    // Clear previous checkboxes
-    container.innerHTML = '';
-
-    // Ensure that options is defined before proceeding
-    if (typeof options === 'undefined' || options.length === 0) {
-        console.error("No options available for checkboxes.");
-        return;
-    }
-
-    // Add the heading inside the checkbox container
-    const heading = document.createElement("h3");
-    heading.innerHTML = "What factors in metadata should be adjusted for?";
-    container.appendChild(heading);
-
-    // Create checkboxes based on the selected options
-    options.forEach(option => {
-        if (firstSelect.value !== option && (!secondSelect || secondSelect.value !== option)) {
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.id = option;
-            checkbox.name = "adjust_factors"; // Same name for group capture
-            checkbox.value = option;
-
-            // Add event listener to each checkbox to communicate with Shiny
-            //checkbox.addEventListener('change', function() {
-                //let selectedCheckboxes = Array.from(document.querySelectorAll('input[name="adjust_factors"]:checked')).map(cb => cb.value);
-                //Shiny.setInputValue('adjust_factors', selectedCheckboxes);
-            //});
-
-            const label = document.createElement("label");
-            label.htmlFor = option;
-            label.appendChild(document.createTextNode(option.charAt(0).toUpperCase() + option.slice(1)));
-
-            container.appendChild(checkbox);
-            container.appendChild(label);
-            container.appendChild(document.createElement("br"));
-        }
-    });
-  }
-
-  // Shiny custom message handler to receive options
-  // Shiny.addCustomMessageHandler("updateOptions", function(data) {
-    //console.log("Received options from Shiny:", data.options);
-
-    // Ensure options are defined and not empty, otherwise use fallback
-    //if (data.options && data.options.length > 0) {
-    //  options = data.options;
-    //} else {
-    //  console.log("No options received or options array is empty. Using fallback options.");
-    //  options = ["Apple", "Orange"];
-    //}
-
-    // After assigning options, update the dropdowns and checkboxes
-    //updateSecondSelect();
-    //updateCheckboxes();
-
-    // Debugging: Display the received data in the debug output
-    //document.getElementById("debugOutput").textContent = JSON.stringify(data, null, 2);
-  //});
-
-  // Function to handle the page load
-  window.onload = function() {
-    // Initialize radio button behavior on load
-    var selectedValue = document.querySelector('input[name="fav_language"]:checked').value;
-    if (selectedValue === "True") {
-      showOutcomeQuestion();
-    } else {
-      hideOutcomeQuestion();
-    }
-  };
-</script>
-
 
 </body>
 </html>
