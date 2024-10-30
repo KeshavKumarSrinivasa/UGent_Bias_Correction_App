@@ -7,23 +7,25 @@
 #' @noRd
 #'
 mod_select_number_of_cv_iterations_ui <- function(id) {
-
   ns <- NS(id)
-  sliderInput(ns("number_of_cv_iterations"),
-              "Select Number of CV Iterations",
-              min = 5,
-              max = 50,
-              value = 5)
+  sliderInput(
+    ns("cvIter"),
+    "Select Number of CV Iterations",
+    min = 5,
+    max = 50,
+    value = 5
+  )
 }
-
 
 #' select_number_of_cv_iterations Server Function
 #'
 #' @noRd
-mod_select_number_of_cv_iterations_server <- function(id) {
-  moduleServer(id, function(input, output, session){
-    # Return a reactive expression with the value of the input
-    return(reactive({ input$cv_iter }))
+mod_select_number_of_cv_iterations_server <- function(id, r) {
+  moduleServer(id, function(input, output, session) {
+    # Store the slider input value in `r$cv_iter`
+    r$input$cv_iter <- reactive({
+      input$cvIter
+    })
   })
 }
 

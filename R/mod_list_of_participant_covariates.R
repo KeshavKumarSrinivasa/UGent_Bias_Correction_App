@@ -52,12 +52,10 @@ mod_list_of_participant_covariates_server <- function(id, r) {
     })
 
     observe(
-      {
-        req(input$outcome_interest)
-        r$input$selected_outcome_of_interest(input$outcome_interest)
-      }
-
-
-    )
+        {
+          req(input$outcome_interest)
+          r$input$selected_outcome_of_interest(input$outcome_interest)
+        }
+      )
   })
 }

@@ -20,11 +20,12 @@ mod_select_alpha_value_ui <- function(id) {
 #' select_alpha_value Server Function
 #'
 #' @noRd
-mod_select_alpha_value_server <- function(id) {
+mod_select_alpha_value_server <- function(id,r) {
   moduleServer(id, function(input, output, session) {
-    return(reactive({
+    r$input$alpha_value <- reactive({
       input$alpha_value
-    }))
+    })
+    print(r$input$alpha_value())
   })
 }
 

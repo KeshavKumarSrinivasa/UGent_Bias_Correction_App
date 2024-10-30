@@ -32,6 +32,8 @@ mod_study_for_another_outcome_server <- function(id, r) {
       study_for_another_outcome
     })
 
+
+
   })
 }
 ## To be copied in the UI
