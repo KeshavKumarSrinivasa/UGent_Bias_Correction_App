@@ -13,7 +13,7 @@ mod_participant_data_remaining_covariates_ui <- function(id) {
     # Dropdown for remaining covariates, only displayed if show_dropdown is TRUE
     selectInput(
       inputId = ns("remaining_covariates"),
-      label = "What was the study designed for?",
+      label = "",
       choices = NULL,  # Placeholder choices; update dynamically in server
       selected = NULL
     )
@@ -28,79 +28,35 @@ mod_participant_data_remaining_covariates_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    # Define each input as a reactive expression if they are reactive sources
-    participant_data_columns <- reactive({
-      req(r$input$participant_data$participant_dataset_columns)
-      r$input$participant_data$participant_dataset_columns()
-    })
-
-    selected_outcome <- reactive({
-      req(r$input$selected_outcome_of_interest)
-      r$input$selected_outcome_of_interest()
-    })
-
-    show_dropdown <- reactive({
-      req(r$input$study_for_another_outcome)
-      r$input$study_for_another_outcome()
-    })
-
 
     # Observe and update dropdown choices when conditions are met
-    observeEvent(show_dropdown(),{
-      req(participant_data_columns(), selected_outcome(), show_dropdown())
-      display_dropdown <- eval(parse(text = show_dropdown()))
-      if (display_dropdown) {
-        # Update dropdown choices excluding the selected outcome
-        remaining_choices <- setdiff(participant_data_columns(), selected_outcome())
-        print("In 1")
-      }else{
-        remaining_choices <- c()
-        print("In 2")
+    observe({
+      req(r$input$participant_data$participant_dataset_columns())
+      req(r$input$selected_outcome_of_interest())
+      # req(r$input$study_for_another_outcome())
+      req(r$input$selected_actual_outcome_of_interest())
+      t1 <- r$input$participant_data$participant_dataset_columns()
+      t2 <- isolate(r$input$selected_outcome_of_interest())
+      t3 <- setdiff(t1,t2)
+      t4 <- isolate(r$input$selected_actual_outcome_of_interest())
+      t5 <- setdiff(t3,t4)
+      t6 <- c(t4,t5)
+      updateSelectInput(session, "remaining_covariates", choices = t6)
+    })
+
+    selected_actual_outcome_of_interest <- reactive({
+
+      if (is.null(input$remaining_covariates)) {
+        return(r$input$participant_data$participant_dataset_columns()[2])
+      } else{
+        return(input$remaining_covariates)
       }
-      r$input$remaining_choices_for_primary_outcome <- remaining_choices
-      print(":::::::::::::::")
-      print(r$input$remaining_choices_for_primary_outcome)
-      print(":::::::::::::::")
-      updateSelectInput(session, "remaining_covariates", choices = r$input$remaining_choices_for_primary_outcome)
-    })
-
-    observeEvent(selected_outcome(),{
-      req(participant_data_columns(), selected_outcome(), show_dropdown())
-      display_dropdown <- eval(parse(text = show_dropdown()))
-      if (display_dropdown) {
-        # Update dropdown choices excluding the selected outcome
-        remaining_choices <- setdiff(participant_data_columns(), selected_outcome())
-        print("In 11")
-      }else{
-        remaining_choices <- c()
-        print("In 22")
-      }
-      r$input$remaining_choices_for_primary_outcome <- remaining_choices
-      print(":::::::::::::::")
-      print(r$input$remaining_choices_for_primary_outcome)
-      print(":::::::::::::::")
-      updateSelectInput(session, "remaining_covariates", choices = r$input$remaining_choices_for_primary_outcome)
     })
 
 
-
-    # Reactive expression to return the selected covariate
-    selected_covariate <- reactive({
-      req(eval(parse(text = show_dropdown())))  # Only return if dropdown is visible
-      input$remaining_covariates
-    })
-
-    # r$input$remaining_choices_for_primary_outcome <- reactive({
-    #   req(selected_covariate())  # Only return if dropdown is visible
-    #   remaining_choices <- setdiff(participant_data_columns(),selected_covariate())
-    #   remaining_choices
-    # })
 
     # Assign the selected covariate to r$input
-    r$input$selected_remaining_outcome_of_interest <- reactive({
-      req(selected_covariate())
-      selected_covariate()
-    })
+    r$input$selected_actual_outcome_of_interest(selected_actual_outcome_of_interest())
   })
 }
 ## To be copied in the UI

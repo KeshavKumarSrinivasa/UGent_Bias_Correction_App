@@ -15,7 +15,7 @@ mod_study_for_another_outcome_ui <- function(id) {
       inputId = ns("is_study_another_outcome"),
       label = "",
       choices = c("Yes" = TRUE, "No" = FALSE),  # Map Yes to TRUE, No to FALSE
-      selected = NULL  # Set "No" as the default
+      selected = TRUE  # Set "No" as the default
     )
   )
 }
@@ -31,6 +31,7 @@ mod_study_for_another_outcome_server <- function(id, r) {
       study_for_another_outcome <- input$is_study_another_outcome
       study_for_another_outcome
     })
+
   })
 }
 ## To be copied in the UI
