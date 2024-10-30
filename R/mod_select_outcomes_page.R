@@ -23,11 +23,15 @@ mod_select_outcomes_page_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    # Store reactive outputs from each submodule in r$input
-    r$input$selected_outcome_of_interest <- mod_list_of_participant_covariates_server(ns("list_of_participant_covariates_1"), r)
-    r$input$study_for_another_outcome <- mod_study_for_another_outcome_server(ns("study_for_another_outcome_1"))
-    r$input$selected_remaining_outcome_of_interest <- mod_participant_data_remaining_covariates_server(ns("participant_data_remaining_covariates_1"), r)
-    r$input$covariates_to_adjust <- mod_participant_columns_to_adjust_server(ns("participant_columns_to_adjust_1"), r)
+    # observe({
+    #   req(r$input$participant_data$participant_dataset_columns())  # Ensure participant_data is available
+
+      # Initialize each submodule and store the reactive outputs in `r`
+      mod_list_of_participant_covariates_server("list_of_participant_covariates_1", r)
+      mod_study_for_another_outcome_server("study_for_another_outcome_1",r)
+      mod_participant_data_remaining_covariates_server("participant_data_remaining_covariates_1", r)
+      mod_participant_columns_to_adjust_server("participant_columns_to_adjust_1", r)
+    # })
   })
 }
 ## To be copied in the UI

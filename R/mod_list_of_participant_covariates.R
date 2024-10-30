@@ -24,26 +24,27 @@ mod_list_of_participant_covariates_ui <- function(id) {
 #' list_of_participant_covariates Server Function
 #'
 #' @noRd
-mod_list_of_participant_covariates_server <- function(id,r) {
+mod_list_of_participant_covariates_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    participant_data_columns <- r$input$participant_data$participant_dataset_columns()
+    # Make participant_data_columns reactive if it's a reactive source
+    # participant_data_columns <- reactive({
+    #   req(r$input$participant_data$participant_dataset_columns())
+    #   r$input$participant_data$participant_dataset_columns()
+    # })
 
-    # Update dropdown choices
+    # Update dropdown choices when participant_data_columns is available
     observe({
-      req(participant_data_columns)  # Ensure columns are available
-
-      updateSelectInput(session, "outcome_interest", choices = participant_data_columns, selected = participant_data_columns[1])
+      req(r$input$participant_data$participant_dataset_columns)
+      updateSelectInput(session, "outcome_interest", choices = r$input$participant_data$participant_dataset_columns())
     })
 
 
-    # This module will return the selected outcome to use in other parts of the app
-    selected_outcome <- reactive({
+
+    r$input$selected_outcome_of_interest <- reactive({
+      req(input$outcome_interest)
       input$outcome_interest
     })
-
-    # Make selected_outcome available to be accessed outside this module
-    return(selected_outcome)
   })
 }

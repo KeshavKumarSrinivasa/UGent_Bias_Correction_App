@@ -13,26 +13,24 @@ mod_study_for_another_outcome_ui <- function(id) {
     # Yes/No radio button input for the question, mapped to TRUE/FALSE
     radioButtons(
       inputId = ns("is_study_another_outcome"),
-      label = "Was this study designed for another outcome?",
+      label = "",
       choices = c("Yes" = TRUE, "No" = FALSE),  # Map Yes to TRUE, No to FALSE
-      selected = FALSE  # Set "No" as the default
+      selected = NULL  # Set "No" as the default
     )
   )
 }
 #' study_for_another_outcome Server Functions
 #'
 #' @noRd
-mod_study_for_another_outcome_server <- function(id) {
+mod_study_for_another_outcome_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    # Reactive to return the TRUE/FALSE response
-    study_design_choice <- reactive({
-      input$is_study_another_outcome
+    r$input$study_for_another_outcome <- reactive({
+      req(input$is_study_another_outcome)
+      study_for_another_outcome <- input$is_study_another_outcome
+      study_for_another_outcome
     })
-
-    # Make study_design_choice accessible outside the module
-    return(study_design_choice)
   })
 }
 ## To be copied in the UI
