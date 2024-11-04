@@ -20,8 +20,6 @@ library(dplyr)
 calculate_smd_all_covariates <- function(participant_data, train_data_with_weights, secondary_outcome,primary_outcome) {
 
   covariates <- participant_data %>% select(-c(subjid,secondary_outcome)) %>% colnames()
-  print("covariates")
-  print(covariates)
 
   weights_values <- train_data_with_weights[,"weights"]
 
@@ -49,8 +47,8 @@ calculate_smd_all_covariates <- function(participant_data, train_data_with_weigh
 
   # Loop through each covariate to calculate SMD before and after weighting
   for (covariate in covariates) {
-    print("Working on")
-    print(covariate)
+    # print("Working on")
+    # print(covariate)
 
     # Check if the covariate is continuous (numeric) or categorical
     if (!is.numeric(participant_train_data[[covariate]])) {
@@ -136,15 +134,15 @@ calculate_smd_all_covariates <- function(participant_data, train_data_with_weigh
     }
     # print("****************")
   }
-  print("****************")
-  print("smd_before")
-  print(smd_before)
-  print("****************")
+  # print("****************")
+  # print("smd_before")
+  # print(smd_before)
+  # print("****************")
 
-  print("****************")
-  print("smd_after")
-  print(smd_after)
-  print("****************")
+  # print("****************")
+  # print("smd_after")
+  # print(smd_after)
+  # print("****************")
 
 
   # Return the SMD values before and after applying weights

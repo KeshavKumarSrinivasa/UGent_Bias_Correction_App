@@ -28,6 +28,7 @@ run_pipeline <- function(participant_data,
                          primary_outcome,
                          secondary_outcome,
                          confounding_bias_variables,
+                         # valid_participant_dataset_columns,
                          alpha_val,
                          cv_iter,
                          metabolite_ids_are_rows,
@@ -37,7 +38,9 @@ run_pipeline <- function(participant_data,
   processed_data <- pre_process(
     participant_data,
     metabolite_data,
+    primary_outcome,
     secondary_outcome,
+    # valid_participant_dataset_columns,
     metabolite_ids_are_rows = FALSE,
     case_control_col = "nafld",
     split_ratio = 0.8
@@ -56,7 +59,6 @@ run_pipeline <- function(participant_data,
 
   # Step 3: Multivariate analysis
   message("Step 3: Performing multivariate analysis")
-  message(cv_iter)
   multivariate_results <- perform_multivariate_analysis(
     train_data = train_data,
     test_data = test_data,

@@ -26,13 +26,13 @@ mod_participant_columns_to_adjust_server <- function(id, r) {
     ns <- session$ns
 
     list_of_checkboxes <- reactive({
-      req(r$input$participant_data$participant_dataset_columns())
+      req(r$input$participant_data$actual_participant_dataset_columns())
       req(r$input$selected_outcome_of_interest())
       req(r$input$study_for_another_outcome())
       req(r$input$selected_actual_outcome_of_interest())
       t9 <- r$input$study_for_another_outcome()
       t10 <- eval(parse(text=t9))
-      t11 <- r$input$participant_data$participant_dataset_columns()
+      t11 <- r$input$participant_data$actual_participant_dataset_columns()
       t12 <- r$input$selected_actual_outcome_of_interest()
       t13 <- r$input$selected_outcome_of_interest()
 

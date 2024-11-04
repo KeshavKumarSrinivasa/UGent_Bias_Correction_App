@@ -27,11 +27,11 @@ perform_multivariate_analysis <- function(train_data,
 
   # Create model matrix
   # print(head(train_data[,head(colnames(train_data))]))
+  print(secondary_outcome)
   x <- model.matrix(as.formula(paste(secondary_outcome, "~ . - 1")), data = train_data)  # Create model matrix (no intercept)
   y <- as.factor(train_data[[secondary_outcome]])  # Outcome variable (factor)
+  print(levels(y))
 
-  cv_iter <- as.numeric(cv_iter)
-  alpha_val <- as.numeric(alpha_val)
 
   # Run cross-validated glmnet with weights
   cv_fit <- cv.glmnet(
@@ -100,6 +100,7 @@ perform_multivariate_analysis <- function(train_data,
       size = 5,
       hjust = 0
     )
+  # print(roc_plot)
 
   # print(y_pred)
   # print(test_y)

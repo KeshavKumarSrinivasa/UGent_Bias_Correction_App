@@ -27,7 +27,7 @@ mod_participant_upload_server <- function(id) {
     })
 
     # Step 2: Read the file using the read_file function
-    dataset <- reactive({
+    actual_dataset <- reactive({
       req(input$participant_data)  # Ensure the file input exists
       file_path <- input$participant_data$datapath
       file_extension <- file_ext()  # Get the file extension
@@ -35,15 +35,29 @@ mod_participant_upload_server <- function(id) {
     })
 
     # Step 3: Get the list of variables/columns using fct_get_list_of_variables
-    dataset_columns <- reactive({
-      req(dataset())  # Ensure dataset is available
-      get_list_of_variables(dataset())
+    actual_dataset_columns <- reactive({
+      req(actual_dataset())  # Ensure dataset is available
+      get_list_of_variables(actual_dataset())
+    })
+
+    # Step 4: Convert the list of variables/columns to valid names
+    valid_dataset_columns <- reactive({
+      req(actual_dataset())  # Ensure dataset is available
+      get_valid_column_names(actual_dataset())
+    })
+
+    # Step 5: Set the dataset variables/columns to valid names
+    valid_dataset <- reactive({
+      req(actual_dataset())  # Ensure dataset is available
+      get_valid_dataset(actual_dataset())
     })
 
     # Return reactive expressions (not invoked immediately)
     return(list(
-      participant_dataset_columns = dataset_columns,
-      participant_dataset = dataset
+      participant_dataset_columns = valid_dataset_columns,
+      participant_dataset = valid_dataset,
+      actual_participant_dataset_columns = actual_dataset_columns,
+      actual_participant_dataset = actual_dataset
     ))
   })
 }

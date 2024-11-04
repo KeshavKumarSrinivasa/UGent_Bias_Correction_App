@@ -36,7 +36,7 @@ mod_metabolomics_upload_server <- function(id) {
     })
 
     # Step 2: Read the file using the read_file function
-    dataset <- reactive({
+    actual_dataset <- reactive({
       req(input$metabolomics_data)  # Ensure the file input exists
       file_path <- input$metabolomics_data$datapath
       file_extension <- file_ext()  # Get the file extension
@@ -44,15 +44,28 @@ mod_metabolomics_upload_server <- function(id) {
     })
 
     # Step 3: Get the list of variables/columns using fct_get_list_of_variables
-    dataset_columns <- reactive({
+    actual_dataset_columns <- reactive({
       req(dataset())  # Ensure dataset is available
       get_list_of_variables(dataset())
     })
 
+    # Step 4: Convert the list of variables/columns to valid names
+    valid_dataset_columns <- reactive({
+      req(actual_dataset())  # Ensure dataset is available
+      get_valid_column_names(actual_dataset())
+    })
+
+    # Step 5: Set the dataset variables/columns to valid names
+    valid_dataset <- reactive({
+      req(actual_dataset())  # Ensure dataset is available
+      get_valid_dataset(actual_dataset())
+    })
     # Return reactive expressions (not invoked immediately)
     return(list(
-      metabolomics_dataset_columns = dataset_columns,
-      metabolomics_dataset = dataset
+      metabolomics_dataset_columns = valid_dataset_columns,
+      metabolomics_dataset = valid_dataset,
+      actual_metabolomics_dataset_columns = actual_dataset_columns,
+      actual_metabolomics_dataset = actual_dataset
     ))
   })
 }

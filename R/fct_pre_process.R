@@ -12,7 +12,7 @@
 #' @return A list containing 'train', 'test', 'combined_data', 'participant_data', and 'metabolite_data'.
 #'
 #' @noRd
-pre_process <- function(participant_data, metabolite_data, secondary_outcome,metabolite_ids_are_rows = TRUE, case_control_col = "case_control", split_ratio = 0.8) {
+pre_process <- function(participant_data, metabolite_data, primary_outcome, secondary_outcome,metabolite_ids_are_rows = TRUE, case_control_col = "case_control", split_ratio = 0.8) {
 
   # Transpose metabolite data if metabolite IDs are along the rows
   if (metabolite_ids_are_rows) {
@@ -22,7 +22,13 @@ pre_process <- function(participant_data, metabolite_data, secondary_outcome,met
   #Store participant_data_columns
   participant_data_columns <- colnames(participant_data)
   columns_to_exclude <- setdiff(participant_data_columns,secondary_outcome)
-  print(columns_to_exclude)
+
+  if(primary_outcome==secondary_outcome){
+    case_control_col <- secondary_outcome
+  }else{
+    case_control_col <- primary_outcome
+  }
+
 
 
   # More concise and specific to metabolite data
@@ -34,6 +40,7 @@ pre_process <- function(participant_data, metabolite_data, secondary_outcome,met
   # Make subjid as rownames
   rownames(combined_data) <- combined_data[["subjid"]]
   combined_data <- combined_data[,-c(which(colnames(combined_data)=="subjid"))]
+
 
   # Stratified split on case/control status
   set.seed(123)  # For reproducibility

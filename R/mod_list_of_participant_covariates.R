@@ -29,7 +29,7 @@ mod_list_of_participant_covariates_server <- function(id, r) {
 
     ooi_choices <- reactive({
 
-      t4 <- r$input$participant_data$participant_dataset_columns()
+      t4 <- r$input$participant_data$actual_participant_dataset_columns()
       t7 <- r$input$selected_outcome_of_interest()
       t5 <- isolate(r$input$selected_actual_outcome_of_interest())
       t6 <- setdiff(t4, t5)

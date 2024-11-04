@@ -30,7 +30,7 @@ mod_participant_data_remaining_covariates_server <- function(id, r) {
 
     # Observe and update dropdown choices when conditions are met
     observe({
-      t1 <- r$input$participant_data$participant_dataset_columns()
+      t1 <- r$input$participant_data$actual_participant_dataset_columns()
       t2 <- r$input$selected_outcome_of_interest()
       t3 <- setdiff(t1, t2)
       t4 <- r$input$selected_actual_outcome_of_interest()
@@ -47,15 +47,7 @@ mod_participant_data_remaining_covariates_server <- function(id, r) {
 
     })
 
-    # observe(
-    #   {
-    #     req(r$input$study_for_another_outcome)
-    #     study_for_another_outcome <- eval(parse(text = r$input$study_for_another_outcome()))
-    #     if(study_for_another_outcome){
-    #       r$input$selected_actual_outcome_of_interest <- r$input$selected_outcome_of_interest
-    #     }
-    #   }
-    # )
+
   })
 }
 ## To be copied in the UI

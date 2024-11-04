@@ -10,6 +10,8 @@ get_list_of_variables <- function(data) {
   if (is.null(data)) {
     stop("No data provided.")
   }
-
-  return(colnames(data))
+  list_of_variables <- colnames(data)
+  valid_column_names <- process_column_names(list_of_variables)
+  names(list_of_variables) <- valid_column_names
+  return(list_of_variables)
 }

@@ -23,8 +23,8 @@ mod_select_outcomes_page_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    r$input$selected_outcome_of_interest <- reactiveVal(r$input$participant_data$participant_dataset_columns()[1])
-    r$input$selected_actual_outcome_of_interest <- reactiveVal(r$input$participant_data$participant_dataset_columns()[2])
+    r$input$selected_outcome_of_interest <- reactiveVal(r$input$participant_data$actual_participant_dataset_columns()[1])
+    r$input$selected_actual_outcome_of_interest <- reactiveVal(r$input$participant_data$actual_participant_dataset_columns()[2])
 
 
     mod_study_for_another_outcome_server("study_for_another_outcome_1",r)
