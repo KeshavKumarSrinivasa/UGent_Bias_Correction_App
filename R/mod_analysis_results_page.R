@@ -26,7 +26,7 @@ mod_analysis_results_page_server <- function(id,r){
     # Run the analysis if not already cached
     observe({
       if (is.null(analysis_result())) {
-        analysis_result(perform_analysis())  # Run and store the result
+        analysis_result(perform_analysis(r))  # Run and store the result
       }
     })
 
@@ -38,7 +38,7 @@ mod_analysis_results_page_server <- function(id,r){
       if (is.null(cached_plots())) {
         req(analysis_result())
         # Get ggplots as png_files from the analysis result
-          png_files <- save_plots_as_png()
+          png_files <- save_plots_as_png(analysis_result())
           cached_plots(png_files)  # Cache the list of PNG file paths
         }
     })
@@ -49,7 +49,11 @@ mod_analysis_results_page_server <- function(id,r){
     })
 
     # Return the analysis_result reactive
-    return(analysis_result())
+    # return(analysis_result())
+    r$output$analysis_results <- reactive({
+      req(analysis_result())
+      analysis_result()
+    })
 
   })
 }

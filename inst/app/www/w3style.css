@@ -235,3 +235,12 @@ body {
 }
 
 
+
+.checkbox_group {
+  background-color: lightpink;
+  width: 330px;
+  height: 220px;
+  overflow: scroll;
+}
+
+

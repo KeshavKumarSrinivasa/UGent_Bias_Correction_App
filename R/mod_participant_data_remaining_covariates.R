@@ -46,6 +46,16 @@ mod_participant_data_remaining_covariates_server <- function(id, r) {
       r$input$selected_actual_outcome_of_interest(input$remaining_covariates)
 
     })
+
+    # observe(
+    #   {
+    #     req(r$input$study_for_another_outcome)
+    #     study_for_another_outcome <- eval(parse(text = r$input$study_for_another_outcome()))
+    #     if(study_for_another_outcome){
+    #       r$input$selected_actual_outcome_of_interest <- r$input$selected_outcome_of_interest
+    #     }
+    #   }
+    # )
   })
 }
 ## To be copied in the UI

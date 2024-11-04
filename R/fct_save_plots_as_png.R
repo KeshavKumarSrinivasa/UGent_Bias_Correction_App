@@ -5,11 +5,11 @@
 #' @return The return value, if any, from executing the function.
 #'
 #' @noRd
-save_plots_as_png <- function() {
+save_plots_as_png <- function(analysis_results) {
 
   tmp_dir <- tempdir()
-  analysis_plots <- list(roc_plot = analysis_result()$multivariate_results$roc_plot,
-                         volcano_plot=analysis_result()$univariate_results$volcano_plot)
+  analysis_plots <- list(roc_plot = analysis_results$multivariate_results$roc_plot,
+                         volcano_plot=analysis_results$univariate_results$volcano_plot)
 
   if (!is.null(analysis_plots)) {
     png_files <- vector("list", length = length(analysis_plots))  # List to store file paths

@@ -23,9 +23,12 @@ mod_select_number_of_cv_iterations_ui <- function(id) {
 mod_select_number_of_cv_iterations_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     # Store the slider input value in `r$cv_iter`
-    r$input$cv_iter <- reactive({
-      input$cvIter
-    })
+    observe(
+      {
+        req(r$cv_iter())
+        r$input$cv_iter(as.integer(r$cv_iter()))
+      }
+    )
   })
 }
 

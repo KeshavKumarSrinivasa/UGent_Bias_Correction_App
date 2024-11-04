@@ -22,6 +22,8 @@ mod_select_parameters_page_ui <- function(id) {
 mod_select_parameters_page_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    r$input$alpha_value <- reactiveVal()
+    r$input$cv_iter <- reactiveVal()
     mod_select_number_of_cv_iterations_server("select_number_of_cv_iterations_1",r)
     mod_select_alpha_value_server("select_alpha_value_1",r)
   })

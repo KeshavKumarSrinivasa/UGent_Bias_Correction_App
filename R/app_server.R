@@ -9,7 +9,6 @@ app_server <- function(input, output, session) {
   r <- reactiveValues()
 
 
-
   #Storing the current page number.
   currentPage <- reactiveVal("page0")
 
@@ -56,14 +55,22 @@ app_server <- function(input, output, session) {
     )
   })
 
-  r$input$cv_iter <- reactive({
-    input$cv_iter
-  }
+  r$cv_iter <- reactive(
+    {
+      input$cv_iter
+    }
   )
-  r$input$alpha_value <- reactive({
-    input$alpha_value
-  })
+  r$alpha_value <- reactive(
+    {
+      input$alpha_value
+    }
+  )
 
+  # observe(
+  #   {
+  #     print(r$alpha_value())
+  #   }
+  # )
 
 }
 

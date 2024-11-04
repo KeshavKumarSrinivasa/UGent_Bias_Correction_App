@@ -19,8 +19,8 @@ mod_view_analysis_server <- function(id,r=r)
     metabolomics_data = r$metabolomics_data$metabolomics_dataset()
     metabolites_are_rows = r$metabolites_are_rows()
     selected_primary_outcome = r$primary_outcome
-    selected_secondary_outcome = r$secondary_outcome
-    confounding_bias_variables = r$confounding_bias_variables
+    selected_secondary_outcome = r$input$selected_outcome_of_interest
+    confounding_bias_variables = r$input$covariates_to_adjust
     cv_iter = r$cv_iter
     alpha_val = r$alpha
 

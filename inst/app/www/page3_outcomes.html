@@ -9,6 +9,16 @@
 <script>
   console.log("Page 3 loaded.");
 </script>
+<style>
+.checkbox_group {
+  background-color: white;
+  width: 330px;
+  height: 220px;
+  overflow-y: auto; /* Vertical scroll only when needed */
+  padding: 10px; /* Padding for inner spacing */
+  border-radius: 5px; /* Optional: Adds rounded corners */
+}
+</style>
 </head>
 <body>
 
@@ -41,7 +51,9 @@
     <div class="column" id="checkbox_question">
       <!-- Ensure the heading is preserved -->
         <h3>Select the columns to adjust for:</h3>
+        <div class="checkbox_group">
       {{participant_columns_to_adjust}}
+        </div>
     </div>
 
 
