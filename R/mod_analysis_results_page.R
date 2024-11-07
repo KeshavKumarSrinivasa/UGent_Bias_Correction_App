@@ -9,8 +9,9 @@
 #' @importFrom shiny NS tagList
 mod_analysis_results_page_ui <- function(id) {
   ns <- NS(id)
-  htmlTemplate(app_sys("app/www/page5_analysis.html"))
-               # display_analysis_results = mod_view_analysis_ui(ns("view_analysis_1")))
+  htmlTemplate(app_sys("app/www/page5_analysis.html"),
+
+               display_analysis_results = mod_view_analysis_ui(ns("view_analysis_1")))
 }
 
 #' analysis_results_page Server Functions

@@ -19,7 +19,7 @@ mod_download_univariate_analysis_ui <- function(id) {
 #' download_univariate_analysis Server Functions
 #'
 #' @noRd
-mod_download_univariate_analysis_server <- function(id,data_univariate_results){
+mod_download_univariate_analysis_server <- function(id,r){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
@@ -31,7 +31,7 @@ mod_download_univariate_analysis_server <- function(id,data_univariate_results){
       content = function(file) {
         # Generate random data (rnorm) for the CSV
         # data <- matrix(rnorm(100), ncol = 10)
-        data <- data_univariate_results
+        data <- r$output$analysis_results()$univariate_results$results
         write.csv(data, file, row.names = FALSE)
       }
     )

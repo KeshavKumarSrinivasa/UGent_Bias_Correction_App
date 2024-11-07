@@ -8,7 +8,7 @@ mod_view_analysis_ui <- function(id) {
   ns <- NS(id)
 
   # Output the slickR carousel with PNG images
-  slickROutput(ns("slickr_panel"), width = 800, height = 400)
+  plotOutput(ns("slickr_panel"))
   # selectInput(ns("slickr_panel"),"WHATEVER",choices=LETTERS,selected=LETTERS[1])
 }
 
@@ -41,32 +41,39 @@ mod_view_analysis_server <- function(id,r=r){
     #
     # print(":::::::::::::::::::::::::")
 
-
+    plots_analysis <- reactiveVal()
     observe({
       # Generate PNGs only if not cached
       if (is.null(cached_plots())) {
         req(analysis_result())
 
         # Get ggplots as png_files from the analysis result
-        png_files <- save_plots_as_png(analysis_result())
+        result_plots <- save_plots_as_png(analysis_result())
+        png_files <- result_plots$files
+        plots_analysis(result_plots$roc_plot)
 
         cached_plots(png_files)  # Cache the list of PNG file paths
+        print(cached_plots())
       }
     })
 
     # Render slickR with the generated PNG images
 
-      output$slickr_panel <- renderSlickR({
+      output$slickr_panel <- renderPlot({
 
-        slickR(replicate(4,{
+        req(plots_analysis())
 
-          xmlSVG({hist(rnorm(100),
-                       col = 'darkgray',
-                       border = 'white')},
-                 standalone=TRUE)
+        # slickR(replicate(4,{
+        #
+        #   xmlSVG({hist(rnorm(100),
+        #                col = 'darkgray',
+        #                border = 'white')},
+        #          standalone=TRUE)
+        #
+        # },simplify = FALSE), width = 800, height = 400) + settings(dots = TRUE)})
 
-        },simplify = FALSE), width = 800, height = 400) + settings(dots = TRUE)})
-
+        plots_analysis()
+      })
 
 
 

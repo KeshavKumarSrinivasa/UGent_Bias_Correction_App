@@ -19,7 +19,7 @@ mod_download_smd_analysis_ui <- function(id) {
 #' download_smd_analysis Server Functions
 #'
 #' @noRd
-mod_download_smd_analysis_server <- function(id, data_smd){
+mod_download_smd_analysis_server <- function(id, r){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
@@ -31,7 +31,7 @@ mod_download_smd_analysis_server <- function(id, data_smd){
       content = function(file) {
         # Generate random data (rnorm) for the CSV
         # data <- matrix(rnorm(100), ncol = 10)
-        data <- data_smd$smd_after
+        data <- r$output$analysis_results()$smd_results$smd_after
         write.csv(data, file, row.names = FALSE)
       }
     )
