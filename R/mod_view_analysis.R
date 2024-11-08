@@ -10,7 +10,7 @@ mod_view_analysis_ui <- function(id) {
   # Output the slickR carousel with PNG images
   # plotOutput(ns("slickr_panel"))
   # selectInput(ns("slickr_panel"),"WHATEVER",choices=LETTERS,selected=LETTERS[1])
-  slickROutput(ns("slick_output"),width='100%',height='200px')
+  slickROutput(ns("slick_output"),width='75%',height='200px')
 
 }
 
@@ -70,6 +70,7 @@ mod_view_analysis_server <- function(id,r=r){
       req(r$output$all_plots())
       print("$$$$$$$$$$$$$")
       print(show(r$output$all_plots()$plot_objects$ROC_PLOT))
+      print("$$$$$$$$$$$$$")
 
       carousel_plots(lapply(r$output$all_plots()$plot_objects, function(x) {
         # svglite::xmlSVG(x)
@@ -94,7 +95,7 @@ mod_view_analysis_server <- function(id,r=r){
         slickR(carousel_plots(),
                slideId = 'slick1',
                height = 400,
-               width = 800)
+               width = 800) + settings(dots = TRUE)
       })
 
 
