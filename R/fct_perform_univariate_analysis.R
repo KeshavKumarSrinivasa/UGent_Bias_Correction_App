@@ -81,12 +81,12 @@ perform_univariate_analysis <- function(train_data,
   results$logFDR <- -log10(results$FDR)
 
   # Step 1: Create Volcano Plot
-  volcano_plot <- ggplot(results, aes(x = Estimate, y = logFDR)) +
+  volcano_plot <- svglite::xmlSVG(show(ggplot(results, aes(x = Estimate, y = logFDR)) +
     geom_point(aes(color = FDR < 0.05)) +  # Color points based on significance
     scale_color_manual(values = c("grey", "red")) +  # Red for significant, grey for non-significant
     labs(title = "Volcano Plot", x = "Effect Size (Estimate)", y = "-log10(FDR)") +
     theme_minimal() +
-    theme(legend.position = "none")
+    theme(legend.position = "none")),standalone = FALSE)
 
   write.csv(results,"univariate_analysis.csv")
 

@@ -24,6 +24,7 @@ mod_select_parameters_page_server <- function(id, r) {
     ns <- session$ns
     r$input$alpha_value <- reactiveVal()
     r$input$cv_iter <- reactiveVal()
+    r$output$all_plots <- reactiveVal()
     mod_select_number_of_cv_iterations_server("select_number_of_cv_iterations_1",r)
     mod_select_alpha_value_server("select_alpha_value_1",r)
   })

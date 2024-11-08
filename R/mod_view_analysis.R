@@ -8,8 +8,10 @@ mod_view_analysis_ui <- function(id) {
   ns <- NS(id)
 
   # Output the slickR carousel with PNG images
-  plotOutput(ns("slickr_panel"))
+  # plotOutput(ns("slickr_panel"))
   # selectInput(ns("slickr_panel"),"WHATEVER",choices=LETTERS,selected=LETTERS[1])
+  slickROutput(ns("slick_output"),width='100%',height='200px')
+
 }
 
 mod_view_analysis_server <- function(id,r=r){
@@ -28,6 +30,7 @@ mod_view_analysis_server <- function(id,r=r){
 
     # Reactive value to cache generated PNG plots
     cached_plots <- reactiveVal()
+    carousel_plots <- reactiveVal()
 
     # print(":::::::::::::::::::::::::")
     # observe({
@@ -50,18 +53,33 @@ mod_view_analysis_server <- function(id,r=r){
         # Get ggplots as png_files from the analysis result
         result_plots <- save_plots_as_png(analysis_result())
         png_files <- result_plots$files
-        plots_analysis(result_plots$roc_plot)
+
+        r$output$all_plots(result_plots)
 
         cached_plots(png_files)  # Cache the list of PNG file paths
-        print(cached_plots())
+        # print(cached_plots())
+        # print(":::::::::")
+        # print(r$output$all_plots()$files)
       }
     })
 
     # Render slickR with the generated PNG images
 
-      output$slickr_panel <- renderPlot({
 
-        req(plots_analysis())
+     observe({
+      req(r$output$all_plots())
+      print("$$$$$$$$$$$$$")
+      print(show(r$output$all_plots()$plot_objects$ROC_PLOT))
+
+      carousel_plots(lapply(r$output$all_plots()$plot_objects, function(x) {
+        # svglite::xmlSVG(x)
+        x
+      }))
+    })
+
+      output$slick_output <- renderSlickR({
+
+        req(carousel_plots())
 
         # slickR(replicate(4,{
         #
@@ -72,7 +90,11 @@ mod_view_analysis_server <- function(id,r=r){
         #
         # },simplify = FALSE), width = 800, height = 400) + settings(dots = TRUE)})
 
-        plots_analysis()
+        # r$output$all_plots()$ROC_PLOT
+        slickR(carousel_plots(),
+               slideId = 'slick1',
+               height = 400,
+               width = 800)
       })
 
 

@@ -20,7 +20,13 @@ mod_analysis_results_page_ui <- function(id) {
 mod_analysis_results_page_server <- function(id,r){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
-    mod_view_analysis_server("view_analysis_1",r)
+
+    observe(
+      if(is.null(r$output$all_plots())){
+        mod_view_analysis_server("view_analysis_1",r)
+      }
+    )
+
 
 
   })

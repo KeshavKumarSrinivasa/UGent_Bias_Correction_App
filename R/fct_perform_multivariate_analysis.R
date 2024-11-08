@@ -88,7 +88,7 @@ perform_multivariate_analysis <- function(train_data,
   )
 
   # Step 6: Create the ROC plot with confidence bands
-  roc_plot <- ggroc(roc_obj, color = "blue") +
+  roc_plot <- svglite::xmlSVG(show(ggroc(roc_obj, color = "blue") +
     geom_ribbon(data = ci_df, aes(x = x, ymin = ymin, ymax = ymax), fill = "blue", alpha = 0.2) +  # Add confidence bands
     ggtitle(paste("ROC Curve (AUC = ", round(auc_value, 3), ")", sep = "")) +
     theme_minimal() +
@@ -99,7 +99,7 @@ perform_multivariate_analysis <- function(train_data,
       label = paste0("AUC 95% CI: (", round(auc_ci[1], 3), ", ", round(auc_ci[2], 3), ")"),
       size = 5,
       hjust = 0
-    )
+    )),standalone = TRUE)
   # print(roc_plot)
 
   # print(y_pred)
