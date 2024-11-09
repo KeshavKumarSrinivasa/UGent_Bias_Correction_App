@@ -144,6 +144,9 @@ calculate_smd_all_covariates <- function(participant_data, train_data_with_weigh
   # print(smd_after)
   # print("****************")
 
+  smd_before <- smd_before %>% rename(smd_value_before = smd_value)
+  smd_after <- smd_after %>% rename(smd_value_after = smd_value)
+
 
   # Return the SMD values before and after applying weights
   return(list(smd_before = smd_before, smd_after = smd_after))

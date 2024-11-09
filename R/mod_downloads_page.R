@@ -23,6 +23,9 @@ mod_downloads_page_ui <- function(id) {
 mod_downloads_page_server <- function(id,r){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
+    # print("::::::::::::")
+    # print(names(r$output))
+    # print("::::::::::::")
     mod_download_ipw_server("download_ipw_1",r)
     mod_download_model_coefficients_server("download_model_coefficients_1",r)
     mod_download_univariate_analysis_server("download_univariate_analysis_1",r)

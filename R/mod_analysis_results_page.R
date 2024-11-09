@@ -20,12 +20,40 @@ mod_analysis_results_page_ui <- function(id) {
 mod_analysis_results_page_server <- function(id,r){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
+#
+    observe({
+      alpha <- r$input$alpha_value()
+      cv_iter <- r$input$cv_iter()
+      selected_outcome_of_interest <- r$input$selected_outcome_of_interest()
+      selected_actual_outcome_of_interest <- r$input$selected_actual_outcome_of_interest()
+      study_for_another_outcome <- r$input$study_for_another_outcome()
+      covariates_to_adjust <- r$input$covariates_to_adjust()
 
-    observe(
-      if(is.null(r$output$all_plots())){
-        mod_view_analysis_server("view_analysis_1",r)
-      }
-    )
+      r$input$entered_values(
+        list(
+          alpha,
+          cv_iter,
+          selected_outcome_of_interest,
+          selected_actual_outcome_of_interest,
+          study_for_another_outcome,
+          covariates_to_adjust
+        )
+      )
+    })
+
+    observe({
+      req(r$input$alpha_value())
+      req(r$input$cv_iter())
+      req(r$input$selected_outcome_of_interest())
+      req(r$input$selected_actual_outcome_of_interest())
+      req(r$input$study_for_another_outcome())
+      req(r$input$covariates_to_adjust())
+      req(r$input$entered_values())
+
+      entered_values <- r$input$entered_values()
+
+      mod_view_analysis_server("view_analysis_1",r)
+    })
 
 
 

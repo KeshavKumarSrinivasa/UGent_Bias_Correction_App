@@ -31,7 +31,7 @@ mod_download_univariate_analysis_server <- function(id,r){
       content = function(file) {
         # Generate random data (rnorm) for the CSV
         # data <- matrix(rnorm(100), ncol = 10)
-        data <- r$output$analysis_results()$univariate_results$results
+        data <- r$output()$univariate_results$results
         write.csv(data, file, row.names = FALSE)
       }
     )

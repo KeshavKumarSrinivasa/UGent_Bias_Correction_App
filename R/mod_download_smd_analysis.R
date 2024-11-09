@@ -31,7 +31,15 @@ mod_download_smd_analysis_server <- function(id, r){
       content = function(file) {
         # Generate random data (rnorm) for the CSV
         # data <- matrix(rnorm(100), ncol = 10)
-        data <- r$output$analysis_results()$smd_results$smd_after
+        data_a <- r$output()$smd_results$smd_after
+        data_a <- data_a %>% rename(smd_value = smd_value_after)
+        data_a["weighting_status"] <- "after"
+
+        data_b <- r$output()$smd_results$smd_before
+        data_b <- data_b %>% rename(smd_value = smd_value_before)
+        data_b["weighting_status"] <- "before"
+
+        data <- rbind(data_a,data_b)
         write.csv(data, file, row.names = FALSE)
       }
     )

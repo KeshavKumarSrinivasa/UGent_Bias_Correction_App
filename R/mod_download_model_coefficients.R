@@ -32,7 +32,7 @@ mod_download_model_coefficients_server <- function(id,r){
       content = function(file) {
         # Generate random data (rnorm) for the CSV
         # data <- matrix(rnorm(100), ncol = 10)
-        data <- r$output$analysis_results()$multivariate_results$all_coefficients
+        data <- r$output()$multivariate_results$all_coefficients
         write.csv(data, file, row.names = FALSE)
       }
     )
