@@ -9,7 +9,7 @@
 #' @importFrom shiny NS tagList
 mod_landing_page_ui <- function(id) {
   ns <- NS(id)
-  htmlTemplate(app_sys("app/www/page0_landing.html"))
+  htmlTemplate(app_sys("app/www/page0_landing.html"),download_demo_data = mod_download_demo_data_ui("download_demo_data_1"))
 }
 
 #' landing_page Server Functions
@@ -18,7 +18,7 @@ mod_landing_page_ui <- function(id) {
 mod_landing_page_server <- function(id){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
-
+    mod_download_demo_data_server("download_demo_data_1")
   })
 }
 
