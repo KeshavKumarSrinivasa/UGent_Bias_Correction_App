@@ -31,6 +31,10 @@ perform_analysis <- function(r) {
 
   confounding_bias_variables <- which(confounding_bias_variables %in% r$input$participant_data$actual_participant_dataset_columns())
 
+  secondary_outcome_case <- r$input$selected_as_case_in_secondary_outcome()
+
+  secondary_outcome_control <- r$input$selected_as_control_in_secondary_outcome()
+
 
   analysis <- run_pipeline(participant_data = participant_data,
                            metabolite_data = metabolomics_data,
@@ -38,6 +42,8 @@ perform_analysis <- function(r) {
                            secondary_outcome =  selected_secondary_outcome,
                            confounding_bias_variables = confounding_bias_variables,
                            # valid_participant_dataset_columns = valid_participant_dataset_columns,
+                           secondary_outcome_case = secondary_outcome_case,
+                           secondary_outcome_control = secondary_outcome_control,
                            alpha_val = alpha_val,
                            cv_iter = cv_iter,
                            metabolite_ids_are_rows = metabolites_are_rows)

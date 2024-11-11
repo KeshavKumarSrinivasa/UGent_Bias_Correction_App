@@ -26,7 +26,8 @@ mod_select_outcomes_page_server <- function(id, r) {
 
     r$input$selected_outcome_of_interest <- reactiveVal(r$input$participant_data$actual_participant_dataset_columns()[1])
     r$input$selected_actual_outcome_of_interest <- reactiveVal(r$input$participant_data$actual_participant_dataset_columns()[2])
-
+    r$input$selected_as_case_in_secondary_outcome <- reactiveVal()
+    r$input$selected_as_control_in_secondary_outcome <- reactiveVal()
 
     mod_study_for_another_outcome_server("study_for_another_outcome_1",r)
     mod_list_of_participant_covariates_server("list_of_participant_covariates_1", r)

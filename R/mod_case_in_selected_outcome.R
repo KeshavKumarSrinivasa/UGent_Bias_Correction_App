@@ -34,7 +34,7 @@ mod_case_in_selected_outcome_server <- function(id, r) {
       if (outcome_number_of_factors() == 2) {
         # Display a selectInput with the levels of the selected variable
         selectInput(
-          ns("case_in_outcome_of_interest"),
+          ns("select_case_in_outcome_of_interest"),
           label = "Select Case:",
           choices = levels(as.factor(r$input$participant_data$participant_dataset()[[r$input$selected_outcome_of_interest()]]))
         )
@@ -42,6 +42,20 @@ mod_case_in_selected_outcome_server <- function(id, r) {
         # Display a message if the outcome is not binary
         div("Please select a binary outcome.")
       }
+    })
+
+    # Observe and update the reactive value for the selected case and control
+    observeEvent(input$select_case_in_outcome_of_interest,{
+      req(input$select_case_in_outcome_of_interest)  # Ensure input is available
+      r$input$selected_as_case_in_secondary_outcome(input$select_case_in_outcome_of_interest)
+
+      # Update the control outcome based on the remaining level
+      r$input$selected_as_control_in_secondary_outcome(
+        setdiff(
+          levels(as.factor(r$input$participant_data$participant_dataset()[[r$input$selected_outcome_of_interest()]])),
+          r$input$selected_as_case_in_secondary_outcome()
+        )
+      )
     })
   })
 }

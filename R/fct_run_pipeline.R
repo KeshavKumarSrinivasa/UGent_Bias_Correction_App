@@ -29,6 +29,8 @@ run_pipeline <- function(participant_data,
                          secondary_outcome,
                          confounding_bias_variables,
                          # valid_participant_dataset_columns,
+                         secondary_outcome_case,
+                         secondary_outcome_control,
                          alpha_val,
                          cv_iter,
                          metabolite_ids_are_rows,
@@ -78,7 +80,9 @@ run_pipeline <- function(participant_data,
     participant_data = participant_data,
     train_data_with_weights = ip_weights$data_with_weights,
     secondary_outcome,
-    primary_outcome
+    primary_outcome,
+    secondary_outcome_case,
+    secondary_outcome_control
   )
 
   # Return processed data

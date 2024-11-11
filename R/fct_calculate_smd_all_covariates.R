@@ -17,7 +17,7 @@
 library(dplyr)
 
 # Function to calculate SMD with respect to secondary outcome for all covariates
-calculate_smd_all_covariates <- function(participant_data, train_data_with_weights, secondary_outcome,primary_outcome) {
+calculate_smd_all_covariates <- function(participant_data, train_data_with_weights, secondary_outcome,primary_outcome,secondary_outcome_case,secondary_outcome_control) {
 
   covariates <- participant_data %>% select(-c(subjid,secondary_outcome)) %>% colnames()
 
@@ -61,8 +61,9 @@ calculate_smd_all_covariates <- function(participant_data, train_data_with_weigh
         case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Case")
         control_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Control")
       }else{
-        case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Obese")
-        control_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Lean")
+
+        case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == secondary_outcome_case)
+        control_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == secondary_outcome_control)
       }
 
       # Continuous covariate: Calculate SMD using means and variances
