@@ -54,7 +54,7 @@ mod_view_analysis_server <- function(id,r) {
       )
 
       if(as.integer(gsub("display","",display_id)) > 2){
-        plotOutput(ns(display_id))
+        plotOutput(ns(display_id),height = 400,width = 800)
       }else{
         if(display_id=="display2"){
           tagList({

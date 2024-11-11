@@ -91,7 +91,9 @@ perform_multivariate_analysis <- function(train_data,
   roc_plot <- ggroc(roc_obj, color = "blue") +
     geom_ribbon(data = ci_df, aes(x = x, ymin = ymin, ymax = ymax), fill = "blue", alpha = 0.2) +  # Add confidence bands
     ggtitle(paste("ROC Curve (AUC = ", round(auc_value, 3), ")", sep = "")) +
-    theme_minimal() +
+    theme_minimal() + annotate("segment",x = 1, xend = 0, y = 0, yend = 1, color="red", linetype="dashed")
+
+
     annotate(
       "text",
       x = 0.8,

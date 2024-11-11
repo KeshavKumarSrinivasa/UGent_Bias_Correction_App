@@ -26,21 +26,10 @@ mod_download_entered_data_server <- function(id,r){
     # Download handler for generating and serving the CSV
     output$download_entered_data <- downloadHandler(
       filename = function() {
-        paste("entered_data_", Sys.Date(), ".csv", sep = "")
+        paste("entered_data_", Sys.time(), ".csv", sep = "")
       },
       content = function(file) {
-        if(r$input$study_for_another_outcome()=="FALSE"){
-          actual_outcome <- r$input$selected_outcome_of_interest()
-        }else{
-          actual_outcome <-r$input$selected_actual_outcome_of_interest()
-        }
-
-        covariates_to_adjust <- paste(r$input$covariates_to_adjust(),collapse = ", ")
-        vec_entered_values <- c(r$input$selected_outcome_of_interest(),r$input$study_for_another_outcome(),actual_outcome,covariates_to_adjust,r$input$alpha_value(),r$input$cv_iter())
-        vec_entered_input <- c("Selected Outcome of Interest","Was this study designed for another outcome?","Selected Actual Outcome","Covariates selected for adjusting","Alpha Value","Cross Validation Iterations")
-
-        data <- as.data.frame(list(Entered_Input_Type=vec_entered_input,
-                                   Entered_Input_Values=vec_entered_values))
+        data <- get_entered_input_data(r)
         write.csv(data, file, row.names = FALSE)
       }
     )

@@ -10,53 +10,35 @@
 mod_analysis_results_page_ui <- function(id) {
   ns <- NS(id)
   htmlTemplate(app_sys("app/www/page5_analysis.html"),
-
                display_analysis_results = mod_view_analysis_ui(ns("view_analysis_1")))
 }
 
 #' analysis_results_page Server Functions
 #'
 #' @noRd
-mod_analysis_results_page_server <- function(id,r){
-  moduleServer(id, function(input, output, session){
+mod_analysis_results_page_server <- function(id, r) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
-#
-    observe({
-      alpha <- r$input$alpha_value()
-      cv_iter <- r$input$cv_iter()
-      selected_outcome_of_interest <- r$input$selected_outcome_of_interest()
-      selected_actual_outcome_of_interest <- r$input$selected_actual_outcome_of_interest()
-      study_for_another_outcome <- r$input$study_for_another_outcome()
-      covariates_to_adjust <- r$input$covariates_to_adjust()
 
-      r$input$entered_values(
-        list(
-          alpha,
-          cv_iter,
-          selected_outcome_of_interest,
-          selected_actual_outcome_of_interest,
-          study_for_another_outcome,
-          covariates_to_adjust
-        )
+    # Create a reactive expression that captures all inputs
+    entered_values <- reactive({
+      list(
+        alpha = r$input$alpha_value(),
+        cv_iter = r$input$cv_iter(),
+        selected_outcome_of_interest = r$input$selected_outcome_of_interest(),
+        selected_actual_outcome_of_interest = r$input$selected_actual_outcome_of_interest(),
+        study_for_another_outcome = r$input$study_for_another_outcome(),
+        covariates_to_adjust = r$input$covariates_to_adjust()
       )
     })
 
-    observe({
-      req(r$input$alpha_value())
-      req(r$input$cv_iter())
-      req(r$input$selected_outcome_of_interest())
-      req(r$input$selected_actual_outcome_of_interest())
-      req(r$input$study_for_another_outcome())
-      req(r$input$covariates_to_adjust())
-      req(r$input$entered_values())
+    # Observe the reactive value and trigger the analysis module only when inputs change
+    observeEvent(entered_values(), {
+      req(entered_values())  # Ensure the inputs are available
 
-      entered_values <- r$input$entered_values()
-
-      mod_view_analysis_server("view_analysis_1",r)
+      # Run the analysis module with the updated inputs
+      mod_view_analysis_server("view_analysis_1", r)
     })
-
-
-
   })
 }
 

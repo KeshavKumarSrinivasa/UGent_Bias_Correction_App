@@ -26,7 +26,7 @@ mod_download_univariate_analysis_server <- function(id,r){
     # Download handler for generating and serving the CSV
     output$download_univariate_analysis <- downloadHandler(
       filename = function() {
-        paste("univariate_analysis_", Sys.Date(), ".csv", sep = "")
+        paste("univariate_analysis_", Sys.time(), ".csv", sep = "")
       },
       content = function(file) {
         # Generate random data (rnorm) for the CSV

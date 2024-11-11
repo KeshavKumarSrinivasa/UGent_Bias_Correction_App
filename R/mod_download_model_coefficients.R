@@ -27,7 +27,7 @@ mod_download_model_coefficients_server <- function(id,r){
     # Download handler for generating and serving the CSV
     output$download_model_coefficients <- downloadHandler(
       filename = function() {
-        paste("download_model_coefficients_", Sys.Date(), ".csv", sep = "")
+        paste("download_model_coefficients_", Sys.time(), ".csv", sep = "")
       },
       content = function(file) {
         # Generate random data (rnorm) for the CSV
