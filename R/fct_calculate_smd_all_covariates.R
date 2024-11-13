@@ -24,7 +24,10 @@ calculate_smd_all_covariates <- function(participant_data, train_data_with_weigh
   weights_values <- train_data_with_weights[,"weights"]
 
   participant_columns <- covariates
-  participant_train_data <- train_data_with_weights %>% select(c(one_of(participant_columns),secondary_outcome,weights))
+  participant_train_data <- train_data_with_weights %>% select(c(any_of(participant_columns),secondary_outcome,weights))
+  participant_train_data <- participant_train_data %>%  mutate(across(all_of(covariates), ~ if (is.factor(.)){ as.integer(.) }else{.}))
+
+  # print(participant_train_data[["Smoking.Status"]])
 
   # Helper function to calculate SMD for continuous variables
   # SMD = |mean_case - mean_control| / sqrt((var_case + var_control) / 2)
@@ -47,19 +50,21 @@ calculate_smd_all_covariates <- function(participant_data, train_data_with_weigh
 
   # Loop through each covariate to calculate SMD before and after weighting
   for (covariate in covariates) {
-    # print("Working on")
-    # print(covariate)
+    print("Working on")
+    print(covariate)
 
     # Check if the covariate is continuous (numeric) or categorical
-    if (!is.numeric(participant_train_data[[covariate]])) {
-      participant_train_data[[covariate]] <- as.integer(as.factor(participant_train_data[[covariate]]))
-    }
+    # if (!is.numeric(participant_train_data[[covariate]])) {
+    #   participant_train_data[[covariate]] <- as.integer(as.factor(participant_train_data[[covariate]]))
+    # }
     if(TRUE){
 
       # Filter case and control groups
       if(secondary_outcome==primary_outcome){
-        case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Case")
-        control_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Control")
+        # case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Case")
+        # control_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == "Control")
+        case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == secondary_outcome_case)
+        control_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == secondary_outcome_control)
       }else{
 
         case_data <- participant_train_data %>% filter(.data[[secondary_outcome]] == secondary_outcome_case)
@@ -77,10 +82,17 @@ calculate_smd_all_covariates <- function(participant_data, train_data_with_weigh
       smd_value_before <- smd_continuous(mean_case, mean_control, var_case, var_control)
 
       # SMD after weighting: Calculate weighted mean and variance for cases and controls
+      n_case <- length(case_data$weights)
+      n_control <- length(control_data$weights)
       weighted_mean_case <- weighted.mean(case_data[[covariate]], case_data$weights, na.rm = TRUE)
       weighted_mean_control <- weighted.mean(control_data[[covariate]], control_data$weights, na.rm = TRUE)
-      weighted_var_case <- sum(case_data$weights * (case_data[[covariate]] - weighted_mean_case)^2) / sum(case_data$weights)
-      weighted_var_control <- sum(control_data$weights * (control_data[[covariate]] - weighted_mean_control)^2) / sum(control_data$weights_values)
+      weighted_var_case <- sum(case_data$weights * (case_data[[covariate]] - weighted_mean_case)^2) / (((n_case-1)/n_case)*sum(case_data$weights))
+      weighted_var_control <- sum(control_data$weights * (control_data[[covariate]] - weighted_mean_control)^2) / (((n_control-1)/n_control)*sum(control_data$weights))
+      print(c(weighted_mean_case, weighted_mean_control, weighted_var_case, weighted_var_control))
+      print("Numerator case")
+      print(sum(case_data$weights * (case_data[[covariate]] - weighted_mean_case)^2))
+      print("Numerator control")
+      print(sum(control_data$weights * (control_data[[covariate]] - weighted_mean_control)^2))
       smd_value_after <- smd_continuous(weighted_mean_case, weighted_mean_control, weighted_var_case, weighted_var_control)
 
       # Store results in data frames

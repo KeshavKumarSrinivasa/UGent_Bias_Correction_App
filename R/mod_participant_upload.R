@@ -49,7 +49,7 @@ mod_participant_upload_server <- function(id) {
     # Step 5: Set the dataset variables/columns to valid names
     valid_dataset <- reactive({
       req(actual_dataset())  # Ensure dataset is available
-      get_valid_dataset(actual_dataset())
+      preprocess_participant_data(get_valid_dataset(actual_dataset()))
     })
 
     # Return reactive expressions (not invoked immediately)

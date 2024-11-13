@@ -1,0 +1,12 @@
+name: repurpose_V2
+title: repurpose_V2
+username: ourdemoapps
+account: ourdemoapps
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 13322928
+bundleId: 9355723
+url: https://ourdemoapps.shinyapps.io/repurpose_V2/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

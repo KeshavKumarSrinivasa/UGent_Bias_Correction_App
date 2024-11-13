@@ -40,12 +40,16 @@ perform_univariate_analysis <- function(train_data,
 
   # Vector to store p-values for FDR adjustment
   p_values <- numeric()
-
+  print("hello")
+  not_working <- c()
+  print(length(colnames(data_for_univariate_analysis)))
   # Loop through each predictor variable
   for (col in colnames(data_for_univariate_analysis)) {
+    tryCatch({
     if (col != response_var) {
       # Fit univariate logistic regression model
       formula <- as.formula(paste(response_var, "~", col))
+      # weights_values <- abs(rnorm(length(data_for_univariate_analysis[[response_var]])))
       model <- glm(formula, data = data_for_univariate_analysis, family = binomial,weights = weights_values)
       summary_model <- summary(model)
 
@@ -68,18 +72,32 @@ perform_univariate_analysis <- function(train_data,
       # Collect p-values for FDR adjustment
       p_values <- c(p_values, p_value)
     }
-  }
+    },error = function(e) {
+    print(e)
+    not_working <- append(not_working,e)})}
+
+  print("finished loop")
+  print(length(not_working))
 
   # Convert list of results into a data frame
   results <- do.call(rbind, results_list)
+
+  print("finished do.call")
+
 
   # Adjust p-values for False Discovery Rate (FDR)
   fdr_values <- p.adjust(p_values, method = "fdr")
   results$FDR <- fdr_values
 
+  print("finished Adjust p-values")
+
   # Calculate -log10(FDR)
   results$logFDR <- -log10(results$FDR)
 
+  print("finished log10 p-values")
+
+  print(results)
+  print(class(results))
   # Step 1: Create Volcano Plot
   volcano_plot <- ggplot(results, aes(x = Estimate, y = logFDR)) +
     geom_point(aes(color = FDR < 0.05)) +  # Color points based on significance
@@ -88,7 +106,8 @@ perform_univariate_analysis <- function(train_data,
     theme_minimal() +
     theme(legend.position = "none")
 
-  write.csv(results,"univariate_analysis.csv")
+  # write.csv(results,"univariate_analysis.csv")
+  print("finished volcano_plot")
 
   # Step 2: Return results and volcano plot
   return(list(results = results, volcano_plot = volcano_plot))

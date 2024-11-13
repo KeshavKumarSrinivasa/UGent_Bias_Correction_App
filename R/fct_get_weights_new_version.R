@@ -5,16 +5,22 @@
 #' @return The return value, if any, from executing the function.
 #'
 #' @noRd
+#'
+library(randomForest)
 get_weights_new_version <- function(combined_data,
                                     train_data,
                                     primary_outcome,
                                     secondary_outcome,
+                                    secondary_outcome_case,
+                                    secondary_outcome_control,
                                     confounding_bias_variables) {
   weights_new_version <- calculate_new_weights(
     combined_data,
     train_data,
     primary_outcome,
     secondary_outcome,
+    secondary_outcome_case,
+    secondary_outcome_control,
     confounding_bias_variables
   )
   # Add the combined weights as a new column in the combined_data dataframe
@@ -40,6 +46,8 @@ calculate_new_weights <- function(combined_data,
                                   train_data,
                                   primary_outcome,
                                   secondary_outcome,
+                                  secondary_outcome_case,
+                                  secondary_outcome_control,
                                   confounding_bias_variables) {
   selection_bias_weights <- calculate_selection_bias_weights(combined_data,
                                                              train_data,
@@ -48,6 +56,8 @@ calculate_new_weights <- function(combined_data,
   confounding_bias_weights <- calculate_confounding_bias_weights(combined_data,
                                                                  train_data,
                                                                  secondary_outcome,
+                                                                 secondary_outcome_case,
+                                                                 secondary_outcome_control,
                                                                  confounding_bias_variables)
 
   # selection_bias_weights_vals <- selection_bias_weights$weight_values
@@ -90,10 +100,14 @@ calculate_selection_bias_weights <- function(combined_data,
 calculate_confounding_bias_weights <- function(combined_data,
                                                train_data,
                                                secondary_outcome,
+                                               secondary_outcome_case,
+                                               secondary_outcome_control,
                                                confounding_bias_variables) {
   probability_of_secondary_outcome <- get_probability_of_secondary_outcome(combined_data,
                                                                            train_data,
                                                                            secondary_outcome,
+                                                                           secondary_outcome_case,
+                                                                           secondary_outcome_control,
                                                                            confounding_bias_variables)
 
   confounding_bias_weights <- 1 / probability_of_secondary_outcome
@@ -110,8 +124,14 @@ calculate_confounding_bias_weights <- function(combined_data,
 get_probability_of_secondary_outcome <- function(combined_data,
                                                  train_data,
                                                  secondary_outcome,
+                                                 secondary_outcome_case,
+                                                 secondary_outcome_control,
                                                  confounding_bias_variables) {
-  combined_data <- get_secondary_outcome_as_case_control(combined_data, secondary_outcome)
+  print(dim(combined_data))
+  combined_data <- get_secondary_outcome_as_case_control(combined_data, secondary_outcome,
+                                                         secondary_outcome_case,
+                                                         secondary_outcome_control,
+                                                         confounding_bias_variables)
 
   # Define the response (secondary outcome)
   y <- combined_data[["secondary_outcome_as_case_control"]]
@@ -126,9 +146,10 @@ get_probability_of_secondary_outcome <- function(combined_data,
   y <- as.factor(y)
   x <- as.matrix(x)
   # print("confounding_bias_variables:")
-  # print(confounding_bias_variables)
+
   # print("secondary_outcome:")
-  # print(secondary_outcome)
+  print(secondary_outcome)
+  print(y)
   # print("x:")
   # print(x)
   # print("y:")
@@ -140,6 +161,8 @@ get_probability_of_secondary_outcome <- function(combined_data,
                                        nfolds = 10,
                                        family = "binomial")
 
+  # secondary_outcome_model <- randomForest(x,y)
+  print(confounding_bias_variables)
   # Get predictions
   # Get the probability of the "Case" class (i.e., class 1)
   probability_case <- predict(
@@ -190,13 +213,22 @@ get_probability_of_secondary_outcome <- function(combined_data,
 }
 
 
-get_secondary_outcome_as_case_control <- function(combined_data, secondary_outcome) {
+get_secondary_outcome_as_case_control <- function(combined_data, secondary_outcome,
+                                                  secondary_outcome_case,
+                                                  secondary_outcome_control,
+                                                  confounding_bias_variables) {
   make_as_case_control <- function(x) {
-    converted_to_integer <- as.integer(as.factor(x))
-    ifelse(converted_to_integer == 1, "Case", "Control")
+    # converted_to_integer <- as.integer(as.factor(x))
+    converted_to_integer <- x
+    ifelse(converted_to_integer == secondary_outcome_case , "Case", "Control")
   }
+  temp_delete_1 <- secondary_outcome_control
+  temp_delete_2 <- confounding_bias_variables
+
+  print(dim(combined_data))
 
   combined_data <- combined_data %>% mutate(secondary_outcome_as_case_control = make_as_case_control(.data[[secondary_outcome]]))
+  print(combined_data[["secondary_outcome_as_case_control"]])
 
   return(combined_data)
 

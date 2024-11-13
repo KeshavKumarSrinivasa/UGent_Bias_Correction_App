@@ -1,0 +1,269 @@
+* {
+  box-sizing: border-box;
+}
+
+.container-fluid {
+  padding-right:0;
+  padding-left: 0;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+ .section {
+            height: 100vh;
+            display: flex;
+        }
+
+#landing {
+    background-color: #FF92C9;
+}
+#tutorial {
+    background-color: #CD015B;
+}
+
+#aboutApp {
+  background-color: #FF92C9;
+}
+
+#paper {
+  background-color: #CD015B;
+}
+
+#github {
+  background-color: #FF92C9;
+}
+
+
+
+body {
+  font-family: Helvetica, sans-serif;
+  background: #FF92C9;
+  margin: 0;
+  width: 100%;              /* Take up the full width */
+  height: 100vh;            /* Take up the full viewport height */
+}
+
+.close_button{
+  color: white;
+  text-align: left;
+  background-color: #CD015B;
+  border: none;
+  font-size: 20px;
+  font: bolder;
+  padding: 15px 32px;
+  font-weight: 600;
+  position: absolute;
+  top: 30px;
+  left: 12px;
+}
+
+
+
+/* Header/Blog Title */
+.header {
+ /*  padding: 30px; */
+  text-align: center;
+  background: #CD015B;
+  margin: 0;
+  height: 74;
+  line-height: 74px;
+}
+
+.repurpose-symbol {
+  color: white;
+  font-size: 67.5px; /* Adjust size as needed */
+  font-weight: 100;
+}
+
+.header h1 {
+  font-size: 30px;
+  margin: 0;
+  color: #ffffff;
+}
+
+.content-block {
+  position: relative;
+  top: 104px; /* Moves the block down by 50px */
+  left: 40px;
+}
+
+.button {
+  background-color: #CD015B;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  margin: 4px 2px;
+  cursor: pointer;
+  font: bolder;
+  font-weight: 600;
+}
+
+
+
+
+.headline01 {
+  font-size: 40px;
+  color: #CD015B;
+  font-family: Helvetica, sans-serif;
+}
+
+.body01 {
+  font-size: 20px;
+  font-family: Helvetica, sans-serif;
+  color: #FFFFFF;
+  width: 355px;
+  height: 60px;
+}
+
+/* Style the top navigation bar */
+.topnav {
+  overflow: hidden;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-evenly; /* This centers the links horizontally */
+}
+
+
+.topnav a {
+  display: block;
+  color: #000000;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+
+/* Change color on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Create two unequal columns that floats next to each other */
+/* Left column */
+.leftcolumn {
+  float: left;
+  width: 75%;
+}
+
+/* Right column */
+.rightcolumn {
+  float: left;
+  width: 25%;
+  background-color: #f1f1f1;
+  padding-left: 20px;
+}
+
+/* Fake image */
+.fakeimg {
+  background-color: #aaa;
+  width: 100%;
+  padding: 20px;
+}
+
+/* Add a card effect for articles */
+.card {
+  background-color: white;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+/* Clear floats after the columns */
+.row::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Footer */
+.footer {
+  padding: 20px;
+  text-align: center;
+  background: #ddd;
+  margin-top: 20px;
+}
+
+/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 800px) {
+  .leftcolumn, .rightcolumn {
+    width: 100%;
+    padding: 0;
+  }
+}
+
+/* Responsive layout - when the screen is less than 400px wide, make the navigation links stack on top of each other instead of next to each other */
+@media screen and (max-width: 400px) {
+  .topnav a {
+    float: none;
+    width: 100%;
+  }
+}
+
+
+.header {
+  display: flex;                    /* Flexbox layout */
+  justify-content: center;          /* Center the content in the middle */
+  align-items: center;              /* Center content vertically */
+  background-color: #CD015B;        /* Header background color */
+  height: 74px;                     /* Fixed height for the header */
+  position: relative;               /* Allow absolute positioning for the button */
+  padding: 0 20px;                  /* Padding for internal spacing */
+  box-sizing: border-box;           /* Ensure padding is included in the height */
+  width: 100vw;
+}
+
+.close_button {
+  color: white;
+  background-color: #CD015B;
+  border: none;
+  font-size: 24px;                  /* Adjust font size to fit header */
+  padding: 10px 15px;               /* Reduced padding to fit header */
+  font-weight: 600;
+  position: absolute;               /* Place button at the top-left corner */
+  top: 0;
+  left: 0;
+  height: 100%;                     /* Make the button the same height as the header */
+  cursor: pointer;
+}
+
+/* Ensure the entire page is white and stretches dynamically */
+.secondary {
+  font-family: Helvetica, sans-serif;
+  background: #FFFFFF;  /* Full-page white background */
+  margin: 0;
+  padding: 0;
+  width: 100vw;  /* Full viewport width */
+  height: 100vh; /* Full viewport height */
+}
+
+/* Create three equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 50%;
+  padding: 15px;
+}
+
+.footer_outcome {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #ffffff;
+  text-align: center;
+  padding: 10px;
+}
+
+
+
+.checkbox_group {
+  background-color: lightpink;
+  width: 330px;
+  height: 220px;
+  overflow: scroll;
+}
+
+

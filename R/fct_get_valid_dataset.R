@@ -12,5 +12,7 @@ get_valid_dataset <- function(data) {
   column_names <- colnames(data)
   valid_column_names <- process_column_names(column_names)
   colnames(data) <- valid_column_names
+  data <- data %>% mutate(across(where(is.character), as.factor))
+  # data <- preprocess_participant_data(data)
   return(data)
 }

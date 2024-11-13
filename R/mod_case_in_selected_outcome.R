@@ -23,10 +23,16 @@ mod_case_in_selected_outcome_server <- function(id, r) {
 
     outcome_number_of_factors <- reactive({
       variable <- r$input$selected_outcome_of_interest()
-      data <- r$input$participant_data$participant_dataset()
+      input_data <- r$input$participant_data$actual_participant_dataset()
 
       # Calculate the number of unique factor levels
-      number_of_factors <- nlevels(as.factor(data[[variable]]))
+      number_of_factors <- nlevels(as.factor(input_data[[variable]]))
+      if(number_of_factors==0){
+        number_of_factors <- nlevels(as.factor(input_data[[make.names(variable)]]))
+        if(number_of_factors>0){
+          variable <- make.names(variable)
+        }
+      }
       return(number_of_factors)
     })
 
@@ -36,7 +42,7 @@ mod_case_in_selected_outcome_server <- function(id, r) {
         selectInput(
           ns("select_case_in_outcome_of_interest"),
           label = "Select Case:",
-          choices = levels(as.factor(r$input$participant_data$participant_dataset()[[r$input$selected_outcome_of_interest()]]))
+          choices = levels(as.factor(r$input$participant_data$actual_participant_dataset()[[r$input$selected_outcome_of_interest()]]))
         )
       } else {
         # Display a message if the outcome is not binary
@@ -52,7 +58,7 @@ mod_case_in_selected_outcome_server <- function(id, r) {
       # Update the control outcome based on the remaining level
       r$input$selected_as_control_in_secondary_outcome(
         setdiff(
-          levels(as.factor(r$input$participant_data$participant_dataset()[[r$input$selected_outcome_of_interest()]])),
+          levels(as.factor(r$input$participant_data$actual_participant_dataset()[[r$input$selected_outcome_of_interest()]])),
           r$input$selected_as_case_in_secondary_outcome()
         )
       )

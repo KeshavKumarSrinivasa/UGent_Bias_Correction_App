@@ -37,6 +37,7 @@ run_pipeline <- function(participant_data,
                          split_ratio = 0.8) {
   # Step 1: Pre-process the data
   message("Step 1: Pre-processing the data")
+  # print(dim(participant_data))
   processed_data <- pre_process(
     participant_data,
     metabolite_data,
@@ -57,6 +58,8 @@ run_pipeline <- function(participant_data,
   # Step 2: Get Weights
   message("Step 2: Getting weights")
   ip_weights <- get_weights_new_version(combined_data, train_data, primary_outcome,secondary_outcome,
+                                        secondary_outcome_case,
+                                        secondary_outcome_control,
                                         confounding_bias_variables)
 
   # Step 3: Multivariate analysis

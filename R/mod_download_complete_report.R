@@ -9,6 +9,7 @@
 #' @importFrom shiny NS tagList
 #'
 library(openxlsx)
+library(purrr)
 mod_download_complete_report_ui <- function(id) {
   ns <- NS(id)
   tagList(
@@ -33,13 +34,33 @@ mod_download_complete_report_server <- function(id, r) {
         # Create a workbook object
         wb <- createWorkbook()
 
+        df_ipw <- r$output()$ip_weights$data_with_weights
+        df_ipw <- tibble::rownames_to_column(df_ipw,var = "subjid")
+        df_ipw <- df_ipw |> mutate(across(everything(), ~ stri_trans_nfc(.)))
+
+        # df_ipw <- lapply(df_ipw, function(x) {
+        #   if (TRUE) {
+        #     return(stringi::stri_enc_toutf8(x))
+        #   } else {
+        #     return(x)
+        #   }
+        # })
+
+        # # df_ipw[,1] <- stringi::stri_enc_toutf8(df_ipw[,1])
+        # df_ipw[,2] <- purrr::set_names(df_ipw[,2], snakecase::to_any_case(names(df_ipw), transliterations = "Latin-ASCII"))
+
+        # df_ipw <- as.data.frame(df_ipw)
+        write.csv(df_ipw[,-1],"imap_ipw.csv")
+        print(class(df_ipw))
+
         # Collect data for the report
         complete_report <- list(
           entered_input = get_entered_input_data(r),
-          ipw_weights = r$output()$ip_weights$data_with_weights,
+          ipw_weights = df_ipw,
           multivariate_results = r$output()$multivariate_results$all_coefficients,
           univariate_results = r$output()$univariate_results$results,
           smd_analysis = get_smd_data(r),
+          confusion_matrix = r$output()$multivariate_results$confusion_matrix,
           volcano_plot = r$output()$univariate_results$volcano_plot,
           roc_plot = r$output()$multivariate_results$roc_plot
         )

@@ -20,8 +20,6 @@ mod_metabolite_along_ui <- function(id) {
 
 #' metabolite_along Server Functions
 #'
-#' @noRd
-#' metabolite_along Server Functions
 #'
 #' @noRd
 mod_metabolite_along_server <- function(id){

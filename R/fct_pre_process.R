@@ -34,12 +34,29 @@ pre_process <- function(participant_data, metabolite_data, primary_outcome, seco
   # More concise and specific to metabolite data
   processed_metabolite_data <- preprocess_metabolites_data(metabolite_data)
 
-  # Merge the two data frames based on 'participant_id'
-  combined_data <- merge(participant_data, processed_metabolite_data, by = "subjid")
+  # #Impute missing values in Participant Data
+  # participant_data <- preprocess_participant_data(participant_data)
 
+
+  # Merge the two data frames based on 'participant_id'
+  # print("$$$$$$$$$$$$$$$$$$$$")
+  # print(dim(participant_data))
+  # print(dim(processed_metabolite_data))
+  # print(dim(metabolite_data))
+  # print("$$$$$$$$$$$$$$$$$$$$")
+  combined_data <- merge(participant_data, processed_metabolite_data, by = "subjid")
+  # print("!!!!!!!!!!!!!!!!!")
+  # print(dim(participant_data))
+  # print(dim(combined_data))
+  # print(setdiff(participant_data[["subjid"]],processed_metabolite_data[["subjid"]]))
+  # print(processed_metabolite_data[["subjid"]])
+  # print(intersect(participant_data[["subjid"]],processed_metabolite_data[["subjid"]]))
+  # print("!!!!!!!!!!!!!!!!!")
   # Make subjid as rownames
   rownames(combined_data) <- combined_data[["subjid"]]
   combined_data <- combined_data[,-c(which(colnames(combined_data)=="subjid"))]
+
+
 
 
   # Stratified split on case/control status

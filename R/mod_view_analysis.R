@@ -58,11 +58,15 @@ mod_view_analysis_server <- function(id,r) {
       }else{
         if(display_id=="display2"){
           tagList({
-            list(
-              tableOutput(ns("display2_1")),
-            tableOutput(ns("display2_2"))
+            div(
+              style = "max-height: 350px; overflow-y: auto;",
+              list(
+                tableOutput(ns("display2_1")),
+                tableOutput(ns("display2_2"))
+              )
             )
           })
+
 
         }else{
           tableOutput(ns(display_id))

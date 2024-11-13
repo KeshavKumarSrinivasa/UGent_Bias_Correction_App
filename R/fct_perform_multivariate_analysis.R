@@ -32,6 +32,19 @@ perform_multivariate_analysis <- function(train_data,
   y <- as.factor(train_data[[secondary_outcome]])  # Outcome variable (factor)
   print(levels(y))
 
+  print(sum(is.na(x)))
+  print(sum(is.na(y)))
+  print(dim(x))
+  print(dim(y))
+  print(length(y))
+  print(alpha_val)
+  print(sum(is.na(weights)))
+  print(cv_iter)
+  write.csv(x,"debug_x.csv")
+  write.csv(y,"debug_y.csv")
+  write.csv(weights,"debug_weights.csv")
+
+  weights <- weights
 
   # Run cross-validated glmnet with weights
   cv_fit <- cv.glmnet(
@@ -39,10 +52,11 @@ perform_multivariate_analysis <- function(train_data,
     y,
     family = "binomial",
     alpha = alpha_val,
-    weights = weights,
+    # weights = weights,
     nfolds = cv_iter
   )
-
+  print("::::::::::::::::")
+  print(levels(y))
   # Step 1: Extract the coefficients at the best lambda
   coef_matrix <- coef(cv_fit, s = "lambda.min")
   coef_df <- as.data.frame(as.matrix(coef_matrix))
@@ -89,19 +103,31 @@ perform_multivariate_analysis <- function(train_data,
 
   # Step 6: Create the ROC plot with confidence bands
   roc_plot <- ggroc(roc_obj, color = "blue") +
-    geom_ribbon(data = ci_df, aes(x = x, ymin = ymin, ymax = ymax), fill = "blue", alpha = 0.2) +  # Add confidence bands
+    geom_ribbon(
+      data = ci_df,
+      aes(x = x, ymin = ymin, ymax = ymax),
+      fill = "blue",
+      alpha = 0.2
+    ) +  # Add confidence bands
     ggtitle(paste("ROC Curve (AUC = ", round(auc_value, 3), ")", sep = "")) +
-    theme_minimal() + annotate("segment",x = 1, xend = 0, y = 0, yend = 1, color="red", linetype="dashed")
+    theme_minimal() + annotate(
+      "segment",
+      x = 1,
+      xend = 0,
+      y = 0,
+      yend = 1,
+      color = "red",
+      linetype = "dashed"
+    )+
 
-
-    annotate(
-      "text",
-      x = 0.8,
-      y = 0.2,
-      label = paste0("AUC 95% CI: (", round(auc_ci[1], 3), ", ", round(auc_ci[2], 3), ")"),
-      size = 5,
-      hjust = 0
-    )
+  annotate(
+    "text",
+    x = 0.8,
+    y = 0.2,
+    label = paste0("AUC 95% CI: (", round(auc_ci[1], 3), ", ", round(auc_ci[2], 3), ")"),
+    size = 5,
+    hjust = 0
+  )
   # print(roc_plot)
 
   # print(y_pred)
@@ -114,8 +140,8 @@ perform_multivariate_analysis <- function(train_data,
 
   # print(dim(test_data))
 
-  write.csv(coef_df,"all_coefficients.csv")
-  write.csv(cm,"confusion_matrix.csv")
+  # write.csv(coef_df,"all_coefficients.csv")
+  # write.csv(cm,"confusion_matrix.csv")
 
 
   # Return the top ten coefficients, AUC value, and the ROC curve plot
