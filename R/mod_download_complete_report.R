@@ -10,6 +10,7 @@
 #'
 library(openxlsx)
 library(purrr)
+library(stringi)
 mod_download_complete_report_ui <- function(id) {
   ns <- NS(id)
   tagList(

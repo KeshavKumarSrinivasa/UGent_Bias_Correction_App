@@ -9,6 +9,13 @@
   margin-left: 0;
 }
 
+.image_repurpose_benefits {
+  display: flex;
+  width: 100;
+  height: 200;
+}
+
+
 .CenterContent{
   margin: 0;
   position: absolute;
@@ -17,6 +24,167 @@
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
+
+.HeaderAndNav{
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+
+.main_content {
+  height: 100vh; /* Takes up the entire viewport height */
+  display: flex;
+  flex-direction: column;
+  margin-top: 150px;  /* Adjust margin as needed for spacing */
+  margin-left: 100px;
+  top: 214px; /* Moves the block down by 50px */
+  left: 40px;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: center;
+  align-items: baseline;
+}
+
+.tutorial-section {
+  height: 100vh; 
+  margin-top: 0; /* Ensure it starts immediately after main content */
+  padding: 20px;
+  background-color: #CD015B; /* Match the main theme's background */
+  color: #FF92C9; /* Align text color with the main theme */
+  font-family: Helvetica, sans-serif;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for effect */
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+
+}
+
+/* Headings within the tutorial section */
+.tutorial-section h2 {
+  font-size: 30px;
+  color: #FF92C9; /* Matches the header and buttons */
+  margin-bottom: 15px;
+}
+
+/* Paragraphs and list items in the tutorial */
+.tutorial-section p,
+.tutorial-section li {
+  font-size: 18px;
+  color: white; /* Darker text for readability */
+  line-height: 1.6;
+}
+
+/* Lists styling */
+.tutorial-section ol {
+  padding-left: 20px;
+}
+
+/* Add hover effect to links in the tutorial */
+.tutorial-section a {
+  color: #CD015B;
+  text-decoration: none;
+}
+
+.tutorial-section a:hover {
+  text-decoration: underline;
+}
+
+
+
+.about_app-section {
+    height: 100vh;
+    margin-top: 0;
+    padding: 20px;
+    background-color: #FFFFFF;
+    color: #FF92C9;
+    font-family: Helvetica, sans-serif;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+
+/* Headings within the about app section */
+.about_app-section h2 {
+  font-size: 30px;
+  color: #ce005c; /* Matches the header and buttons */
+  margin-bottom: 15px;
+}
+
+/* Paragraphs and other text in the about app section */
+.about_app-section p {
+  font-size: 18px;
+  color: #ce005c; /* Darker text for readability */
+  line-height: 1.6;
+}
+
+/* for paper*/
+.paper-section{
+  height: 100vh; 
+  margin-top: 0; /* Ensure it starts immediately after main content */
+  padding: 20px;
+  background-color: #CD015B; /* Match the main theme's background */
+  color: #FF92C9; /* Align text color with the main theme */
+  font-family: Helvetica, sans-serif;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for effect */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center content vertically */
+  align-items: center; /* Center content horizontally */
+}
+
+/* Headings within the paper and GitHub sections */
+.paper-section h2 {
+  font-size: 30px;
+  color: #FF92C9; /* Matches the header and buttons */
+  margin-bottom: 15px;
+}
+
+/* Paragraphs within the paper section */
+.paper-section p {
+  font-size: 18px;
+  color: white; /* Darker text for readability */
+  line-height: 1.6;
+}
+
+/* for github*/
+.github-section {
+  height: 100vh;
+  margin-top: 0;
+  padding: 20px;
+  background-color: #FFFFFF;
+  color: #FF92C9;
+  font-family: Helvetica, sans-serif;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center content vertically */
+  align-items: center; /* Center content horizontally */
+
+}
+
+/* Headings within the GitHub section */
+.github-section h2 {
+  font-size: 30px;
+  color: #ce005c; /* Matches the header and buttons */
+  margin-bottom: 15px;
+}
+
+/* Paragraphs within the Github sections */
+.github-section p {
+  font-size: 18px;
+  color: #ce005c; /* Darker text for readability */
+  line-height: 1.6;
+}
+
+
 
 
 
@@ -69,8 +237,9 @@ body {
 }
 
 .content-block {
-  position: relative;
-  top: 104px; /* Moves the block down by 50px */
+  position: relative; /* Change from absolute to relative */
+  margin-top: 150px;  /* Adjust margin as needed for spacing */
+  top: 214px; /* Moves the block down by 50px */
   left: 40px;
 }
 
