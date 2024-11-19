@@ -29,12 +29,12 @@ mod_download_ipw_server <- function(id,r){
     # Download handler for generating and serving the CSV
     output$download_ipw <- downloadHandler(
       filename = function() {
-        paste("inverse_probability_weights_", Sys.time(), ".csv", sep = "")
+        paste("inverse_probability_weights_", Sys.Date(), ".csv", sep = "")
       },
       content = function(file) {
         # Generate random data (rnorm) for the CSV
         # data <- matrix(rnorm(100), ncol = 10)
-        data_with_weights <- r$output()$ip_weights$weight_values
+        data_with_weights <- r$output$analysis_results()$ip_weights$weight_values
         data <- data_with_weights
         write.csv(data, file, row.names = FALSE)
       }
