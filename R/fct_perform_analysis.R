@@ -9,6 +9,7 @@ perform_analysis <- function(r) {
 
   participant_data <- r$input$participant_data$participant_dataset()
   metabolomics_data <- r$input$metabolomics_data$metabolomics_dataset()
+  population_distribution_data <- r$input$prevalence_data$population_distribution_covariates()
   confounding_bias_variables <- r$input$covariates_to_adjust()
   alpha_val <- r$input$alpha_val() %>%   as.numeric()
   cv_iter  <- r$input$cv_iter() %>% as.numeric()
@@ -38,6 +39,7 @@ perform_analysis <- function(r) {
 
   analysis <- run_pipeline(participant_data = participant_data,
                            metabolite_data = metabolomics_data,
+                           population_distribution_data = population_distribution_data,
                            primary_outcome = selected_primary_outcome,
                            secondary_outcome =  selected_secondary_outcome,
                            confounding_bias_variables = confounding_bias_variables,

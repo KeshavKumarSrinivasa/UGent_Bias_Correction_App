@@ -6,8 +6,8 @@ mod_view_analysis_ui <- function(id) {
   tagList(
     # Buttons to toggle between plots
     actionButton(ns("display1_btn"), "View Top 10 Coefficients"),
-    actionButton(ns("display2_btn"), "View SMD Table"),
-    actionButton(ns("display3_btn"), "View Volcano"),
+    # actionButton(ns("display2_btn"), "View SMD Table"),
+    # actionButton(ns("display3_btn"), "View Volcano"),
     actionButton(ns("display4_btn"), "View ROC"),
     # UI output for the plot
     uiOutput(ns("plot_and_table_container"))

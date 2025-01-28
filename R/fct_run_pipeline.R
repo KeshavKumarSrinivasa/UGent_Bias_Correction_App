@@ -23,8 +23,10 @@
 #'         - 'smd_results': Results of the standardized mean difference (SMD) analysis.
 #'
 #' @noRd
+library(survey)
 run_pipeline <- function(participant_data,
                          metabolite_data,
+                         population_distribution_data,
                          primary_outcome,
                          secondary_outcome,
                          confounding_bias_variables,
@@ -57,10 +59,20 @@ run_pipeline <- function(participant_data,
 
   # Step 2: Get Weights
   message("Step 2: Getting weights")
-  ip_weights <- get_weights_new_version(combined_data, train_data, primary_outcome,secondary_outcome,
-                                        secondary_outcome_case,
-                                        secondary_outcome_control,
-                                        confounding_bias_variables)
+  results <- perform_raking_and_logistic_regression(data = combined_data,
+                                                    train_data = train_data,
+                                                    population_margins = population_distribution_data,
+                                                    outcome = secondary_outcome,
+                                                    predictors = c("age","sex"))
+
+  # ip_weights <- get_weights_new_version(combined_data, train_data, primary_outcome,secondary_outcome,
+  #                                       secondary_outcome_case,
+  #                                       secondary_outcome_control,
+  #                                       confounding_bias_variables)
+
+  ip_weights <- list(train_weight_values = results$weights,
+                     weights_with_subjid = results$weights_with_subjid)
+  ip_train_weights <- list(train_weight_values = results$train_weights)
 
   # Step 3: Multivariate analysis
   message("Step 3: Performing multivariate analysis")
@@ -75,26 +87,26 @@ run_pipeline <- function(participant_data,
 
   # Step 4: Univariate analysis
   message("Step 4: Performing univariate analysis")
-  univariate_results <- perform_univariate_analysis(train_data, metabolite_data_out, secondary_outcome,ip_weights$train_weight_values)
+  univariate_results <- perform_univariate_analysis(train_data, metabolite_data_out, secondary_outcome,ip_train_weights$train_weight_values)
 
   # Step 5: Standardized mean difference analysis
-  message("Step 5: Calculating standardized mean difference")
-  smd_results <- calculate_smd_all_covariates(
-    participant_data = participant_data,
-    train_data_with_weights = ip_weights$data_with_weights,
-    secondary_outcome,
-    primary_outcome,
-    secondary_outcome_case,
-    secondary_outcome_control
-  )
+  # message("Step 5: Calculating standardized mean difference")
+  # smd_results <- calculate_smd_all_covariates(
+  #   participant_data = participant_data,
+  #   train_data_with_weights = ip_weights$data_with_weights,
+  #   secondary_outcome,
+  #   primary_outcome,
+  #   secondary_outcome_case,
+  #   secondary_outcome_control
+  # )
 
   # Return processed data
   return(
     list(
       ip_weights = ip_weights,
       multivariate_results = multivariate_results,
-      univariate_results = univariate_results,
-      smd_results = smd_results
+      univariate_results = univariate_results
+      # smd_results = smd_results
     )
   )
 }

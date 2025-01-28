@@ -49,16 +49,18 @@ calculate_new_weights <- function(combined_data,
                                   secondary_outcome_case,
                                   secondary_outcome_control,
                                   confounding_bias_variables) {
+  # selection_bias_weights <- 1
+  print("hey")
   selection_bias_weights <- calculate_selection_bias_weights(combined_data,
                                                              train_data,
                                                              primary_outcome,
                                                              secondary_outcome)
-  confounding_bias_weights <- calculate_confounding_bias_weights(combined_data,
-                                                                 train_data,
-                                                                 secondary_outcome,
-                                                                 secondary_outcome_case,
-                                                                 secondary_outcome_control,
-                                                                 confounding_bias_variables)
+  # confounding_bias_weights <- calculate_confounding_bias_weights(combined_data,
+                                                                 # train_data,
+                                                                 # secondary_outcome,
+                                                                 # secondary_outcome_case,
+                                                                 # secondary_outcome_control,
+                                                                 # confounding_bias_variables)
 
   # selection_bias_weights_vals <- selection_bias_weights$weight_values
   # confounding_bias_weights_vals <- confounding_bias_weights$w
@@ -76,8 +78,10 @@ calculate_new_weights <- function(combined_data,
   #     weight_values = combined_data_with_weights[["weights"]]
   #   )
   # )
+  print("hey there!")
 
-  new_weights <- selection_bias_weights * confounding_bias_weights
+  # new_weights <- selection_bias_weights * confounding_bias_weights
+  new_weights <- selection_bias_weights
   return(new_weights)
 }
 
@@ -88,7 +92,9 @@ calculate_selection_bias_weights <- function(combined_data,
   if (primary_outcome == secondary_outcome) {
     selection_bias_weights <- c(1)
   } else{
+    print("okay!")
     selection_bias_weights <- get_weights(combined_data, train_data, primary_outcome)
+    print("What else?!")
     selection_bias_weights <- selection_bias_weights$weight_values
 
   }
@@ -104,11 +110,11 @@ calculate_confounding_bias_weights <- function(combined_data,
                                                secondary_outcome_control,
                                                confounding_bias_variables) {
   probability_of_secondary_outcome <- get_probability_of_secondary_outcome(combined_data,
-                                                                           train_data,
-                                                                           secondary_outcome,
-                                                                           secondary_outcome_case,
-                                                                           secondary_outcome_control,
-                                                                           confounding_bias_variables)
+  train_data,
+  secondary_outcome,
+  secondary_outcome_case,
+  secondary_outcome_control,
+  confounding_bias_variables)
 
   confounding_bias_weights <- 1 / probability_of_secondary_outcome
 

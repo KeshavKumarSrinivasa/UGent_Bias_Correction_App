@@ -34,7 +34,7 @@ mod_download_ipw_server <- function(id,r){
       content = function(file) {
         # Generate random data (rnorm) for the CSV
         # data <- matrix(rnorm(100), ncol = 10)
-        data_with_weights <- r$output$analysis_results()$ip_weights$weight_values
+        data_with_weights <- r$output()$ip_weights$train_weight_values
         data <- data_with_weights
         write.csv(data, file, row.names = FALSE)
       }

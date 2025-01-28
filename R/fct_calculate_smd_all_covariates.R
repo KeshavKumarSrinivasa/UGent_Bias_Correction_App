@@ -45,9 +45,18 @@ calculate_smd_all_covariates <- function(participant_data, train_data_with_weigh
   smd_before <- data.frame(covariate = character(), smd_value = numeric(), stringsAsFactors = FALSE)
   smd_after <- data.frame(covariate = character(), smd_value = numeric(), stringsAsFactors = FALSE)
 
+  participant_train_data <- participant_train_data %>%
+    mutate(
+      sex = as.integer(as.factor(sex)),
+      nafld = as.integer(as.factor(nafld))
+    )
+  # char_to_integer <- function(x){
+  #   as.integer(as.factor(x))
+  # }
+  # participant_train_data <- participant_train_data %>%
+  #   mutate(across(where(is.character), char_to_integer))
 
-
-
+  print(head(participant_train_data))
   # Loop through each covariate to calculate SMD before and after weighting
   for (covariate in covariates) {
     print("Working on")

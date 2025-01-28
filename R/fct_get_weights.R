@@ -6,54 +6,91 @@
 #' @return The train_data dataframe with a new "weights" column containing probabilities.
 #'
 #' @noRd
-library(randomForest)
-library(caret)
+library(glmnet)
 library(dplyr)
+library(ggplot2)
 
-# Function to get weights where prob_case is assigned to cases and prob_control to controls
 get_weights <- function(combined_data, train_data, primary_outcome) {
-
+  train_indices <- rownames(train_data)
   # Define the response (primary outcome)
-  y <- combined_data[[primary_outcome]]
+  y <- combined_data[,primary_outcome]
 
-  # Define the predictors (covariates)
-  x <- combined_data %>% select(-one_of(primary_outcome))  # Remove the primary outcome column from predictors
+  # Convert the response to a binary factor for glmnet (if classification)
+  y <- ifelse(y == "Case", 1, 0)  # Binary encoding
 
-  # Define a reasonable hyperparameter grid for a dataset with many features
-  tune_grid <- expand.grid(
-    mtry = c(10, 50, 100, 200)  # Number of features considered at each split
+
+
+  y_train <- combined_data[train_indices,primary_outcome]
+
+  y_train <- ifelse(y_train == "Case", 1, 0)  # Binary encoding
+
+
+
+
+  # Define the predictors (covariates) and remove the primary outcome
+  x <- combined_data %>% select(-one_of(primary_outcome))
+  x_train <- x[train_indices,]
+  x <- as.matrix(x)  # Convert to matrix for glmnet
+  x_train <- as.matrix(x_train)
+  # Split the test data
+  # test_indices <- rownames(combined_data) %in% rownames(test_data)
+
+
+  # Define a sequence of alpha and lambda values for fine-tuning
+  alpha_values <- seq(0, 1, by = 0.1)  # Mix of LASSO (1) and Ridge (0)
+  lambda_values <- 10^seq(-3, 1, length.out = 100)  # Lambda grid
+
+  # Fine-tune glmnet with cross-validation
+  cv_results <- lapply(alpha_values, function(alpha) {
+    cv.glmnet(
+      x_train, y_train,
+      alpha = alpha,
+      lambda = lambda_values,
+      family = "binomial",  # Logistic regression for classification
+      type.measure = "auc"
+    )
+  })
+
+  # Choose the best alpha and lambda based on cross-validation AUC
+  best_alpha_idx <- which.max(sapply(cv_results, function(cv) max(cv$cvm)))
+  best_model <- cv_results[[best_alpha_idx]]
+  best_alpha <- alpha_values[best_alpha_idx]
+  best_lambda <- best_model$lambda.min
+
+  # Train the final model using the best hyperparameters
+  final_model <- glmnet(
+    x_train, y_train,
+    alpha = best_alpha,
+    lambda = best_lambda,
+    family = "binomial"
   )
 
-  # Cross-validation control: 3-fold CV for faster performance on large datasets
-  control <- trainControl(
-    method = "cv",                  # Use cross-validation
-    number = 3,                     # Number of folds in cross-validation
-    classProbs = TRUE,              # For classification problems, calculate class probabilities
-    summaryFunction = twoClassSummary  # Optimize based on AUC (ROC curve)
-  )
+  # Predict probabilities on the full dataset
+  prob_predictions <- predict(final_model, x, type = "response")
 
-  # Train the random forest model with hyperparameter tuning
-  rf_model <- train(
-    as.formula(paste(primary_outcome, "~ .")),  # Use the primary outcome dynamically
-    data = combined_data,                      # Training dataset
-    method = "rf",                             # Random Forest model
-    tuneGrid = tune_grid,                      # Hyperparameter grid
-    trControl = control,                       # Cross-validation settings
-    metric = "ROC"                             # Optimize for AUC (ROC curve)
-  )
-
-  # Get predicted probabilities for both case and control classes
-  prob_predictions <- predict(rf_model, x, type = "prob")
-
-  # Create a weights vector:
-  # Assign prob_case to participants labeled as "Case" and prob_control to participants labeled as "Control"
+  # Assign weights based on probabilities
   combined_probs <- ifelse(
-    combined_data[[primary_outcome]] == "Case", prob_predictions[, "Case"], # Assign prob_case to case-labeled participants
-    prob_predictions[, "Control"]                                           # Assign prob_control to control-labeled participants
+    y == 1, prob_predictions, 1 - prob_predictions
   )
 
-  # Add the combined weights as a new column in the combined_data dataframe
-  combined_data_with_weights <- combined_data %>% mutate(weights = 1 / combined_probs)
+  combined_data_with_weights <- combined_data %>%
+    mutate(weights = 1 / combined_probs)
+    # mutate(is_test = test_indices)
+
+  # # Prepare the data for plotting
+  # data <- data.frame(
+  #   y = combined_data_with_weights$weights,
+  #   x = 0,  # Dummy variable for visualization
+  #   train_or_test = combined_data_with_weights$is_test
+  # )
+  #
+  # # Plot weights
+  # print(ggplot(data, aes(x = x, y = y, color = train_or_test)) +
+  #         geom_point() +
+  #         labs(title = "Participant Weights", x = "Dummy Variable", y = "Weights") +
+  #         theme_minimal())
+
+
 
   # Filter to match the rows in train_data with weights
   train_data_with_weights <- combined_data_with_weights %>% filter(rownames(.) %in% rownames(train_data))

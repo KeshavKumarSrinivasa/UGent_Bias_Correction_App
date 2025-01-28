@@ -35,8 +35,9 @@ mod_download_complete_report_server <- function(id, r) {
         # Create a workbook object
         wb <- createWorkbook()
 
-        df_ipw <- r$output()$ip_weights$data_with_weights
-        df_ipw <- tibble::rownames_to_column(df_ipw,var = "subjid")
+        # df_ipw <- r$output()$ip_weights$train_weight_values
+        # df_ipw <- tibble::rownames_to_column(df_ipw,var = "subjid")
+        df_ipw <- r$output()$ip_weights$weights_with_subjid
         df_ipw <- df_ipw |> mutate(across(everything(), ~ stri_trans_nfc(.)))
 
         # df_ipw <- lapply(df_ipw, function(x) {
@@ -60,7 +61,7 @@ mod_download_complete_report_server <- function(id, r) {
           ipw_weights = df_ipw,
           multivariate_results = r$output()$multivariate_results$all_coefficients,
           univariate_results = r$output()$univariate_results$results,
-          smd_analysis = get_smd_data(r),
+          # smd_analysis = get_smd_data(r),
           confusion_matrix = r$output()$multivariate_results$confusion_matrix,
           volcano_plot = r$output()$univariate_results$volcano_plot,
           roc_plot = r$output()$multivariate_results$roc_plot
