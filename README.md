@@ -29,22 +29,21 @@ run_app()
 ```
 
 ## 📊 Features
-🔬 Supports Omics Data – Analyze metabolomics, proteomics, lipidomics, and more
-📈 Advanced Visualization – Generate AUROC & volcano plots effortlessly
-⚙️ Flexible Analysis – Perform univariate & multivariate statistical tests
-📂 Easy Data Handling – Upload participant & biological data seamlessly
-🚀 Cost-Effective Research – Repurpose existing datasets for new insights
+🔬 Supports Omics Data – Analyze metabolomics, proteomics, lipidomics, and more  
+📈 Advanced Visualization – Generate AUROC & volcano plots effortlessly  
+⚙️ Flexible Analysis – Perform univariate & multivariate statistical tests  
+📂 Easy Data Handling – Upload participant & biological data seamlessly  
+🚀 Cost-Effective Research – Repurpose existing datasets for new insights  
 
 
 
 ## 🤝 Contributing
 We welcome contributions! To contribute:
 
-Fork this repository
-Create a new branch (feature-xyz)
-Commit your changes
-Submit a Pull Request
-Check out our CONTRIBUTING.md for more details.
+Fork this repository  
+Create a new branch (feature-xyz)  
+Commit your changes  
+Submit a Pull Request  
 
 ## 📬 Contact
 💡 Have questions or suggestions? Feel free to open an Issue or reach out via email at 📧 hob@Ugent.be .
